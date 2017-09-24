@@ -1,5 +1,9 @@
 # 02-601CodingProject
 
+USEFUL LINKS:
+Planning Document (Google Docs): https://docs.google.com/document/d/1enU10H2dsIX9Efk3qIqXVTmk3hnsk2ALxBhD7Ja-hAE/edit?usp=sharing
+
+
 Team:
 Saideep 
 Kwanho 
@@ -33,3 +37,6 @@ Sends the changes up until your last commit to the shared repository on GitHub
 This "pulls" changes from the shared repository to your local repository. Allows you to have a more updated version.
 
 You don't have to use all this functionality, but in general this will make collaboration easier.
+
+
+
