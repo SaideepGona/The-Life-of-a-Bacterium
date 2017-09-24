@@ -10,7 +10,7 @@ Kwanho
 Zhenyu
 Xinling
 
-This repository will serve as the shared repository for code related to our Programming-for-Scientists final coding project. Make sure to download git if you are new to using it/don't have it downloaded already. To get started, here are a few command line commands for collaboration:
+This repository will serve as the shared repository for code related to our Programming-for-Scientists final coding project. Make sure to download git if you are new to using it/don't have it downloaded already. To get started, here are a few command line commands for collaboration using git:
 
 1.) git clone https://github.com/SaideepGona/02-601CodingProject.git
 
