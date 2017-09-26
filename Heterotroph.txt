@@ -1,0 +1,8 @@
+This document contains initialization values for heterotroph cells. These will be read in by the main program.
+
+Movement (base: x) (logistic: L, k, x0) - Next line is the base
+1
+20
+5
+10
+
