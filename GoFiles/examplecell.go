@@ -1,7 +1,7 @@
 package main
 
 import (
-	
+
 	"fmt"
 	"math/rand"
 	"math"
@@ -35,7 +35,7 @@ func SingleCellSim (w,h float64, time int) {
 
 }
 
-func MutateDNA (cellDNA []float64) {
+func MutateDNA(cellDNA []float64) {
 
 	for i := range(cellDNA) {
 		randVal := rand.Intn(100)
@@ -67,7 +67,7 @@ func CalcMovement(cellDNA []float64) float64 {
 	return logistTransform
 
 }
-
+/*
 func RandWalk(width, height, stepSize float64, numberSteps int) float64 {
 	
 		// Workhorse function. Simulates all steps, prints out appropriate statements and calculates the distance
@@ -170,3 +170,5 @@ func Distance(sX, sY, eX, eY float64) float64 {
 	return math.Sqrt(math.Pow((eX-sX),2) + math.Pow((eY-sY), 2))
 
 }
+
+*/
