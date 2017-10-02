@@ -86,7 +86,7 @@ func InField(x, y, w, h float64) bool {
 	} 
 
 	return true
-
+	
 }
 
 func ThetaGen() (float64, float64) {
