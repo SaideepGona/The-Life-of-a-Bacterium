@@ -3,6 +3,7 @@
 USEFUL LINKS:
 Planning Document Full: https://docs.google.com/document/d/1enU10H2dsIX9Efk3qIqXVTmk3hnsk2ALxBhD7Ja-hAE/edit?usp=sharing
 Sampling Cells Planning Doc: https://docs.google.com/document/d/1cIrWe1JmXmto3qtKzb1PK6JLwCKu-wJ-fY96jvfNb1c/edit?usp=sharing
+GIT BOOK: https://git-scm.com/book/en/v2
 
 Team:
 Saideep 
