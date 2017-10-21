@@ -4,6 +4,9 @@
 type Bacteria struct {
   size size
   location location
+  ABenzyme ABenzyme
+  AttackRange float64
+  ResistEnzyme ResistEnzyme
 }
 
 type Petri struct {
@@ -18,4 +21,14 @@ type location struct {
 type size struct {
   centerX, centerY float64
   radius float64
+}
+
+type ABenzyme struct {
+  lock int
+  potency int
+}
+
+type ResistEnzyme struct {
+  key int
+  potency int
 }
