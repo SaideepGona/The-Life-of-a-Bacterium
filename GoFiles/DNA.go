@@ -1,3 +1,4 @@
+
 // Struct and methods for Bacterial DNA
 
 /*
@@ -10,16 +11,27 @@ this means that these phenotypes share some dependence.
 
 */
 
-/* Bacterial DNA Struct
-	code: Maps
-*/
+package main
 
-type PhenotypeToGene []string					// Represents a slice of phenotype names which are grouped because they 
-												// sample from a single gene of interest
-type Gene []float64								// A gene is just a slice of floats
+type Phenotype struct {							// A phenotype and associated aggregate function information
+	name string
+	aggFunction string
+	AggFuncArgs []int
+}
+
+type Edge struct {								// An edge defined by endpoints and with an edge function/arguments
+	phenotype string
+	gene string
+	edgeFunction string
+	edgeFuncArgs []int
+}
+
+type Genome map[string][]float64				// Genome with genome names and corresponding numerical slices
 
 type DNA struct {
-	code map[PhenotypeToGene]Gene
+	phenotypes []Phenotype						// Contains all phenotypes the DNA "controls"
+	edges []Edge								// Contains the edges from phenotype to gene which determine how phenotypes are expressed
+	genome Genome								// Stores all the genes and current gene values in the bacterial genome
 	mutRate float64								// Represents a probability of mutation
 	mutMagnitude float64						// If a mutation occurs, is a benchmark for the magnitude of mutation
 	bounds [2]float64							// Represents some bounds on the values individual gene elements can take
@@ -27,9 +39,52 @@ type DNA struct {
 	sampleCount int								// Represents the number of samples chosen during a selection event per gene 
 }
 
-type BluePrint struct {
+// ********************************************************* DNA Methods and Related Functions *********************************************************************************************
+
+// ----------------- Read DNA from File --------------------------
+
+func ReadInDNA() DNA {
 
 }
 
-// In order to construct a brand new genome, we need to have a BluePrint representing all the bacterial phenotypes as well as 
-// how these phenotypes are related to one another. 
+// ----------------- Mutating the DNA --------------------------
+
+func (dna DNA*) MutateDNA() {
+
+	/*
+	Given a dna object, mutates all the genes at once by calling a genome mutate method.
+	*/
+
+	for gene := range dna.genome {
+
+		Mutate(dna.genome[gene], dna.mutRate, dna.mutMagnitude)
+
+	}
+
+}
+
+	func Mutate (gene *[]float64, mutationRate float64, mutationMagnitude) {
+
+		/*
+		Mutates input genome via pointer
+		*/
+
+		for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
+
+			newRoll := rand.Float64()					// Roll to see if mutation occurs
+
+			if newRoll < mutationRate {
+
+				directionRoll := rand.Int(1)			// Roll to see if mutation is positive or negative
+
+				if directionRoll == 0 {
+					gene[i] += mutationMagnitude
+				} else {
+					gene[i] -= mutationMagnitude
+				}
+
+			}
+		}
+	}
+
+
