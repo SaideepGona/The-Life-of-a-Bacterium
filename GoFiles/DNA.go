@@ -45,22 +45,23 @@ type DNA struct {
 
 func ReadInDNA() DNA {
 
+	/*
+	Read in from a DNA file to build the archetypal DNA struct
+	*/
+
 }
 
-// ----------------- Mutating the DNA --------------------------
+// ----------------- MUTATING THE DNA --------------------------
 
-func (dna DNA*) MutateDNA() {
+func (dna *DNA) MutateDNA() {
 
 	/*
 	Given a dna object, mutates all the genes at once by calling a genome mutate method.
 	*/
 
 	for gene := range dna.genome {
-
 		Mutate(dna.genome[gene], dna.mutRate, dna.mutMagnitude)
-
 	}
-
 }
 
 	func Mutate (gene *[]float64, mutationRate float64, mutationMagnitude) {
@@ -87,4 +88,36 @@ func (dna DNA*) MutateDNA() {
 		}
 	}
 
+// ----------------- END MUTATE DNA ------------------------------
 
+// ----------------- SAMPLING METHODS ----------------------------
+
+func (dna *DNA) PhenotypeSample(phenotypeName string) []float64 {
+
+	/*
+	Conducts sampling from all genes associated with a phenotype
+	*/
+
+}
+
+func (dna *DNA) SampleGene(geneName string) []float64 {
+
+	/*
+	Given a gene name samples from the gene and returns the raw sample result
+	*/
+
+	randIndex := rand.Perm(0, dna.geneSize)
+
+	sampleSlice := make([]float64, 0)
+
+	for i := 0; i < dna.sampleCount; i ++ {
+
+		sampleSlice = append(sampleSlice, dna.genome[geneName][randIndex[i]])
+
+	}
+
+	return sampleSlice
+
+} 
+
+// ----------------- EDGE FUNCTION LIBRARY ----------------------------			> 	This is for functions that act upon the output of a single-gene sample
