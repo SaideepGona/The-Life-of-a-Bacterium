@@ -11,7 +11,9 @@ type Bacteria struct {
 
 type Petri struct {
   size size
+  allBacteria [][]*Bacteria
 }
+
 
 type location struct {
   Petri Petri
