@@ -11,7 +11,7 @@ import (
 func (b *Bacteria) Attack() {
   // scan bacteria in attack range and list them under targets
   var targets []*Bacteria
-  targets = b.OthersInRange()
+  targets = b.OthersInRange(Petri.allBacteria)
   for target := range targets {
     if b.ABenzyme.lock != target.ResistEnzyme.key {
       b.InflictDamage(target, b.ABenzyme.potency)
