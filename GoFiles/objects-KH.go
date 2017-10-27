@@ -11,7 +11,7 @@ type Bacteria struct {
 
 type Petri struct {
   size size
-  allBacteria [][]*Bacteria
+  allBacteria []*Bacteria
 }
 
 
