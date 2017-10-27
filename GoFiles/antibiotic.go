@@ -44,6 +44,7 @@ func (b *Bacteria) DistToTarget(target *Bacteria) float64 {
   return dist
 }
 
-func (b *Bacteria) InflictDamage(t *bacteria, damage float64) {
-
+// potency is an integer ranging from 1 to 9
+func (b *Bacteria) InflictDamage(t *Bacteria, damage float64) {
+  t.size.radius = t.size.radius*damage/10
 }
