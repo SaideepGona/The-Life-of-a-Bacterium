@@ -7,17 +7,15 @@ type Bacteria struct {
   ABenzyme ABenzyme
   AttackRange float64
   ResistEnzyme ResistEnzyme
-  linage int
 }
 
 type Petri struct {
   size Size
-  allBacteria []*Bacteria
+  allBacteria [][]*Bacteria
 }
 
 
 type Location struct {
-
   petri Petri
   coorX, coorY float64
 }

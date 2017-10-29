@@ -12,13 +12,20 @@ type Bacteria struct {
 
 type Petri struct {
   size Size
+<<<<<<< HEAD
+  allBacteria [][]*Bacteria
+=======
   allBacteria []*Bacteria
+>>>>>>> acbf4197a7bd5cd2ecbab004f1325802e18773b2
 }
 
 
 type Location struct {
-
+<<<<<<< HEAD
   petri Petri
+=======
+  Petri Petri
+>>>>>>> acbf4197a7bd5cd2ecbab004f1325802e18773b2
   coorX, coorY float64
 }
 

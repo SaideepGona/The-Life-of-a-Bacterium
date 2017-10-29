@@ -17,8 +17,7 @@ type Petri struct {
 
 
 type Location struct {
-
-  petri Petri
+  Petri Petri
   coorX, coorY float64
 }
 
