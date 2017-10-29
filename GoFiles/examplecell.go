@@ -9,10 +9,10 @@ import (
 
 func main () {
 
-	rand.Seed(time.Now().Unix())
-	width := 100.0
-	height := 100.0
-	timesIter := 1000
+	rand.Seed(time.Now().Unix())			// Random Seed
+	width := 100.0							// Width of environment	
+	height := 100.0							// Height of environment
+	timesIter := 10000						// Number of iterations
 	SingleCellSim(width, height, timesIter)
 
 }
@@ -42,14 +42,14 @@ func SingleCellSim (w,h float64, time int) {
 
 	stepSize := 0.0
 
-	for round:=0; round < time; round++ {
+	for round:=0; round < time; round++ {				// Iterates through time steps
 
 		
-		stepSize = CalcMovement(cellDNA)
+		stepSize = CalcMovement(cellDNA)				// Modifies step size based on the DNA values
 		movementGraph.MoveTo(float64(round), 100)
 		movementGraph.LineTo(float64(round), 10.0*(10.0-stepSize))
 
-		x, y = RandomStep(x , y, stepSize, w, h)
+		x, y = RandomStep(x , y, stepSize, w, h)		// Finds the next movement location
 		pathChart.LineTo(5.0*x, 5.0*y)
 
 		fmt.Println("Position:",x,y)
@@ -78,12 +78,12 @@ func MutateDNA(cellDNA []float64) {
 
 		if randVal < 25 {
 			cellDNA[i] = cellDNA[i] - float64(rand.Intn(3) + 1)
-			if cellDNA[i] < -50 {
+			if cellDNA[i] < -20 {
 				cellDNA[i] = cellDNA[i] + 1
 			}
 		} else if randVal > 75 {
 			cellDNA[i] = cellDNA[i] + float64(rand.Intn(3) + 1)
-			if cellDNA[i] > 50 {
+			if cellDNA[i] > 20 {
 				cellDNA[i] = cellDNA[i] - 1
 			}
 		}

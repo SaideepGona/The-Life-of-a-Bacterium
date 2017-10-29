@@ -30,7 +30,7 @@ type Edge struct {								// An edge defined by endpoints and with an edge funct
 type Genome map[string][]float64				// Genome with genome names and corresponding numerical slices
 
 type DNA struct {
-	phenotypes map[string]Phenotype						// Contains all phenotypes the DNA "controls"
+	phenotypes map[string]Phenotype				// Contains all phenotypes the DNA "controls"
 	edges []Edge								// Contains the edges from phenotype to gene which determine how phenotypes are expressed
 	genome Genome								// Stores all the genes and current gene values in the bacterial genome
 	mutRate float64								// Represents a probability of mutation
@@ -47,7 +47,7 @@ type DNA struct {
 func ReadInDNA() DNA {
 
 	/*
-	Read in from a DNA file to build the archetypal DNA struct
+	Read in from a DNA file to build the archetypal DNA struct from blueprint
 	*/
 
 	pwd, _ := os.Getwd()
@@ -71,7 +71,7 @@ func (dna *DNA) MutateDNA() {
 	func Mutate (gene *[]float64, mutationRate float64, mutationMagnitude) {
 
 		/*
-		Mutates input genome via pointer
+		Mutates input genome via pointer to gene
 		*/
 
 		for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
@@ -140,10 +140,13 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 // ----------------- EDGE FUNCTION LIBRARY ----------------------------			> 	This is for functions that act upon the output of a single-gene sample
 
 func mean(list []float64) float64 {
+
 	var sum float64
+
 	for i := 0; i < len(list); i++{
 		sum += list[i]
 	}
 	return sum/float64(len(list))
+
 }
 
