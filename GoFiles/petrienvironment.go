@@ -16,7 +16,7 @@ func DrawBacteria(x,y,r float64, pic Canvas, color color.Color) Canvas{
    pic.Circle(x,y,r)
 }
 
-func InitialPosition(width int,n int,pic Canvas) Canvas {
+func DrawInitialPosition(width int,n int,pic Canvas) Canvas {
     blue := MakeColor(0,0,225)
     rand.Seed(time.Now().UTC().UnixNano())
     for i:=0 ; i < n ;i++{
@@ -25,6 +25,7 @@ func InitialPosition(width int,n int,pic Canvas) Canvas {
       DrawBacteria(x,y,r,pic,blue)
       }
 }
+
 // Control with temperature
 func DrawHotDeadCell(x,y,r float64, pic Canvas) Canvas{ // if the temperature is too hot
   // cell will dissolve its self
@@ -68,11 +69,11 @@ func DrawAboveBestTemp(x,y,r int, speed,currenttemp, besttemp,hotdeadtemp float6
 func DrawBelowBestTemp(x,y,r int, maxspeed,speed,currenttemp,besttemp, freezedeadtemp float64, pic Canvas) Canvas{
     // when the environment's temperature we below best temp
     blue := MakeColor(0,0,255)
-    if currenttemp < besttemp && currenttemp > 0 {
-      speed = maxspeed * currenttemp / besttemp
+    if currentTemp < bestTemp && currentTemp > 0 {
+      speed = maxSpeed * currenttemp / bestTemp
       DrawBacteria(x,y,r,blue)
     }
-    if currenttemp < = 0 {
+    if currentTemp < = 0 {
       speed = 0
       DrawColdDeadCell(x,y,r,pic)
     }
@@ -80,27 +81,14 @@ func DrawBelowBestTemp(x,y,r int, maxspeed,speed,currenttemp,besttemp, freezedea
 }
 
 // Control with oxygen
-func IsAnaerobic(bactname string) bool {
-  if bactname == ""{
-    return true
-  }
-  return false
-}
-
-func DrawAboveBestOxy(x,y,r int, oxy,bestoxy,speed,destroyoxy float64,name string){
-  if IsAnaerobic(name) == false && oxy < destroyoxy {
-    speed = speed * oxygen/bestoxy
-  } else if IsAnaerobic(name) == true && oxy > 0{
+func DrawAbnormalOxy(x,y,r int, oxy,bestOxy,speed,destroyOxy float64,pic Canvas){
+  white := MakeColor(255,255,255)
+  if oxy < destroyOxy {
+    speed = speed * oxy/bestOxy
+  } else if  oxy => destroyOxy{
     speed = 0
-  } else if
+    pic.SetFillColor(white)
+    pic.Circle(x,y,r)
+  }
+  return pic
 }
-
-
-func ChangeVitamin(){}
-
-func ChangeMineral(){}
-
-func ChangeAgarVisible(){}
-func ChangeOxygen(){}
-func ChangePetones(){}
-func ChangeLight(){}
