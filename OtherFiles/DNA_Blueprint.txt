@@ -1,0 +1,3 @@
+*Phenotypes
+Potency, 
+Resistance

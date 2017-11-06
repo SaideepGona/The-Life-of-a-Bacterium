@@ -51,7 +51,8 @@ func ReadInDNA() DNA {
 	*/
 
 	pwd, _ := os.Getwd()
-	txt, _ := ioutil.ReadFile(pwd+"../OtherFiles/DNA_Blueprint.txt")
+	txt, _ := ioutil.ReadFile(pwd+"/../OtherFiles/DNA_Blueprint.txt")
+	fmt.Println(txt)
 
 }
 
