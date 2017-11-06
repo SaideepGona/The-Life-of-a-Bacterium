@@ -1,0 +1,19 @@
+Configuration
+Mutation Rate:0.2
+Mutation Magnitude:0.1
+Bounds:10
+Gene Size:10
+Sample Size:50
+
+Phenotypes
+Movement,Mean,None
+Energy,Mean,None
+
+Genes
+MovementEnergy
+Movement
+
+Edges
+One,Movement,MovementEnergy,0.5
+Two,Movement,Movement,0.5
+Three,Energy,MovementEnergy,1.0
