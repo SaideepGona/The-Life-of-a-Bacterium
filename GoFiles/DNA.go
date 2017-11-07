@@ -1,5 +1,5 @@
 
-// Struct and methods for Bacterial DNA
+// Struct and methods for Bacterial DNA - Saideep Gona
 
 /*
 
@@ -21,7 +21,6 @@ import (
 	"strconv"
 	"math/rand"
 )
-
 
 type Phenotype struct {							// A phenotype and associated aggregate function information
 	aggFunction string
@@ -53,35 +52,45 @@ type DNA struct {
 
 // ----------------- Read DNA from File and Build Genome Template --------------------------
 
+func MakeNewDNA() DNA {
+
+	// Creates brand new DNA object using the readin file format
+
+	filePath := os.Getwd() + "/../OtherFiles/DNA_blueprint.txt"
+	dnaFile := ReadDNAFile(filePath)
+	return BuildDNA(dnaFile)
+
+}
+
 func ReadDNAFile(filename string) []string {
 	
-		// TAKEN DIRECTLY FROM HW5 WRITEUP
-		// Opens a text file and creates a line-by-line slice of the contents
-	
-		in, err := os.Open(filename)
-		if err != nil {
-			fmt.Println("Error: couldn’t read in the DNA template")
-			os.Exit(1)
-		}
-		// create the variable to hold the lines
-		var lines []string = make([]string, 0)
-		// for every line in the file
-		scanner := bufio.NewScanner(in)
-		for scanner.Scan() {
-		// append it to the lines slice
-			lines = append(lines, scanner.Text())
-		}
-		
-		// check that all went ok
-		if scanner.Err() != nil {
-			fmt.Println("Sorry: there was some kind of error during the file reading")
-			os.Exit(1)
-		}
-		// close the file and return the lines
-		in.Close()
-	
-		return lines
+	// TAKEN DIRECTLY FROM HW5 WRITEUP
+	// Opens a text file and creates a line-by-line slice of the contents
+
+	in, err := os.Open(filename)
+	if err != nil {
+		fmt.Println("Error: couldn’t read in the DNA template")
+		os.Exit(1)
 	}
+	// create the variable to hold the lines
+	var lines []string = make([]string, 0)
+	// for every line in the file
+	scanner := bufio.NewScanner(in)
+	for scanner.Scan() {
+	// append it to the lines slice
+		lines = append(lines, scanner.Text())
+	}
+	
+	// check that all went ok
+	if scanner.Err() != nil {
+		fmt.Println("Sorry: there was some kind of error during the file reading")
+		os.Exit(1)
+	}
+	// close the file and return the lines
+	in.Close()
+
+	return lines
+}
 
 func BuildDNA(fileLines []string) DNA {
 
@@ -125,11 +134,8 @@ func BuildDNA(fileLines []string) DNA {
 			currentLine := strings.Split(fileLines[i], ",")
 			fullDNA.makeEdge(currentLine)
 		}
-
 	}
-
 	return fullDNA
-
 }
 
 func (dna *DNA) makeConfig(currentLine []string) {
@@ -241,20 +247,21 @@ func (gene Gene) Mutate (mutationRate, mutationMagnitude float64) {
 
 // ----------------- SAMPLING METHODS ----------------------------
 
-func (dna *DNA) PhenotypeSample(phenotypeName string) []float64 {
+func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
 
 	/*
 	Conducts sampling from all genes associated with a phenotype
 	*/
 
+	weightedSum := 0.0
 	edges := dna.phenotypes[phenotypeName].edges
-	fullSample := make([]float64,0)
-
 
 	for i := 0; i < len(edges); i++ {
 
 		newSample := dna.SampleGene(edges[i].gene)
-		fullSample = append(fullSample, newSample...)
+		sampleMean := Mean(newSample)
+		weight := edges.weight
+		weightedSum += weight*sampleMean
 
 	}
 
@@ -282,9 +289,9 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 
 } 
 
-// ----------------- EDGE FUNCTION LIBRARY ----------------------------			> 	This is for functions that act upon the output of a single-gene sample
+// ----------------- PHENOTYPE FUNCTION LIBRARY ----------------------------			> 	This is for functions that act upon the output of a single-gene sample
 
-func mean(list []float64) float64 {
+func Mean(list []float64) float64 {
 
 	var sum float64
 
@@ -294,6 +301,7 @@ func mean(list []float64) float64 {
 	return sum/float64(len(list))
 
 }
+
 
 
 
