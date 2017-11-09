@@ -220,25 +220,19 @@ func (dna *DNA) MutateDNA() {
 
 func (gene Gene) Mutate (mutationRate, mutationMagnitude float64) {
 
-
 	/*
 	Mutates input genome via pointer
 	*/
 
 	for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
-
 		newRoll := rand.Float64()					// Roll to see if mutation occurs
-
 		if newRoll < mutationRate {
-
 			directionRoll := rand.Intn(1)			// Roll to see if mutation is positive or negative
-
 			if directionRoll == 0 {
 				gene[i] += mutationMagnitude
 			} else {
 				gene[i] -= mutationMagnitude
 			}
-
 		}
 	}
 }
@@ -246,6 +240,21 @@ func (gene Gene) Mutate (mutationRate, mutationMagnitude float64) {
 // ----------------- END MUTATE DNA ------------------------------
 
 // ----------------- SAMPLING METHODS ----------------------------
+
+func (dna *DNA) PhenotypeExpectation(PhenotypeName string) float64 {
+
+	weightedSum := 0.0
+	edges := dna.phenotypes[phenotypeName].edges
+
+	for i := 0; i < len(edges); i++ {
+
+		geneMean := Mean(edges[i].gene)
+		weight := edges.weight
+		weightedExpectation += weight*sampleMean
+
+	}
+	return weightedExpectation
+}
 
 func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
 
@@ -264,10 +273,9 @@ func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
 		weightedSum += weight*sampleMean
 
 	}
-
-	return fullSample
-
+	return weightedSum
 }
+
 
 func (dna *DNA) SampleGene(geneName string) []float64 {
 
@@ -276,7 +284,6 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 	*/
 
 	randIndex := rand.Perm(dna.geneSize)
-
 	sampleSlice := make([]float64, 0)
 
 	for i := 0; i < dna.sampleSize; i ++ {
@@ -284,14 +291,12 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 		sampleSlice = append(sampleSlice, dna.genome[geneName][randIndex[i]])
 
 	}
-
 	return sampleSlice
-
 } 
 
-// ----------------- PHENOTYPE FUNCTION LIBRARY ----------------------------			> 	This is for functions that act upon the output of a single-gene sample
-
 func Mean(list []float64) float64 {
+
+	// Calculates mean from a slice of floats
 
 	var sum float64
 
@@ -299,9 +304,40 @@ func Mean(list []float64) float64 {
 		sum += list[i]
 	}
 	return sum/float64(len(list))
+}
+
+// ----------------- END SAMPLING METHODS ------------------------
+
+// ----------------- DNA PLOTTING METHODS ------------------------
+
+func AnimatePhenotypes(phenMap map[string][]float64) {
+
+	animationImages := make([]image.Image,0)
+
+	phenotypeList := make([]string, 0)
+	phenotypeProgressions := make([][]float64, 0)
+
+	for phen, list := range phenMap {
+		phenotypeList = append(phenotypeList, phen)
+		phenotypeProgressions := append(phenotypeProgressions, list)
+	}
+
+	numSteps := len(phenotypeProgressions[0])
+	
+	for i := 1; i <= numSteps; i++ {
+
+		newPoints := make([]float64, 0)
+		for phen := 0; phen < len(phenotypeList); phen++ {
+			newPoints = append(newPoints, phenotypeProgressions[phen][i])
+		}
+		canv := DrawSingleStep(newPoints)
+		animationImages = append(animationImages, canv.img)
+	}
+
+	Process(animationImages, "Phenotypes")
 
 }
 
-
+func DrawSingleStep()
 
 
