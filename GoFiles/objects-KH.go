@@ -5,7 +5,7 @@ type Bacteria struct {
   size Size
   location Location
   ABenzyme ABenzyme
-  AttackRange float64
+  attackRange float64
   ResistEnzyme ResistEnzyme
   linage int
   id int
@@ -18,7 +18,7 @@ type Petri struct {
 
 
 type Location struct {
-  Petri Petri
+  petri Petri
   coorX, coorY float64
 }
 
