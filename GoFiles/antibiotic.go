@@ -15,11 +15,9 @@ func (b *Bacteria) Attack() {
   for target := range targets {
     if b.ABenzyme.lock != target.ResistEnzyme.key {
       b.InflictDamage(target, b.ABenzyme.potency)
-    } else if b.ABenzyme.lock == target.ResistEnzyme.key {
-      if b.ABenzyme.potency > target.ResistEnzyme.potency {
-        attackDamage = b.ABenzyme.potency - target.ResistEnzyme.potency
-        b.InflictDamage(target, attackDamage)
-      }
+    } else if b.ABenzyme.lock == target.ResistEnzyme.key && b.ABenzyme.potency > target.ResistEnzyme.potency {
+      attackDamage = b.ABenzyme.potency - target.ResistEnzyme.potency
+      b.InflictDamage(target, attackDamage)
     }
   }
 }
@@ -44,7 +42,10 @@ func (b *Bacteria) DistToTarget(target *Bacteria) float64 {
   return dist
 }
 
-// potency is an integer ranging from 1 to 9
+// Damage can range from 0 to 9
 func (b *Bacteria) InflictDamage(t *Bacteria, damage float64) {
-  t.energyCap = t.energyCap*damage/10
+  t.energyCap -= damage*10
+  if t.energyCap < 0 {
+    // Die!
+  }
 }
