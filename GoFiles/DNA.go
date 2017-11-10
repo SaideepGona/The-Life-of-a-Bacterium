@@ -20,6 +20,7 @@ import (
 	"strings"
 	"strconv"
 	"math/rand"
+	"math"
 )
 
 type Phenotype struct {							// A phenotype and associated aggregate function information
@@ -218,7 +219,7 @@ func (dna *DNA) MutateDNA() {
 	}
 }
 
-func (gene Gene) Mutate (mutationRate, mutationMagnitude float64) {
+func (gene *Gene) Mutate(mutationRate, mutationMagnitude float64) {
 
 	/*
 	Mutates input genome via pointer
@@ -304,6 +305,18 @@ func Mean(list []float64) float64 {
 		sum += list[i]
 	}
 	return sum/float64(len(list))
+}
+
+func Logistic(inputVal float64, arguments []float64) {
+
+	// Passes an input into a logistic function and returns the output. 
+	max := arguments[0]
+	steepness := arguments[1]
+	midpoint := arguments[2]
+
+	output := max/(1.0 + Exp(((-1)*steepness)*(inputVal-midpoint)))
+	return output
+
 }
 
 // ----------------- END SAMPLING METHODS ------------------------
