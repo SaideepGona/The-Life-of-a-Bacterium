@@ -29,8 +29,8 @@ func (b *Bacteria) Attack() {
 func (b *Bacteria) OthersInRange(all []*Bacteria) []*Bacteria {
   var inRange []*Bacteria
   for bacterium := range all {
-    attackRange = b.AttackRange + bacterium.size.radius
-    if b.DistToTarget(bacterium) <= attackRange {
+    range = b.attackRange + bacterium.size.radius
+    if b.DistToTarget(bacterium) <= range {
       inRange = append(inRange, bacterium)
     }
   }
@@ -46,5 +46,5 @@ func (b *Bacteria) DistToTarget(target *Bacteria) float64 {
 
 // potency is an integer ranging from 1 to 9
 func (b *Bacteria) InflictDamage(t *Bacteria, damage float64) {
-  t.size.radius = t.size.radius*damage/10
+  t.energyCap = t.energyCap*damage/10
 }
