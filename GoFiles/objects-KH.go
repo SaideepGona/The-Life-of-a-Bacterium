@@ -8,11 +8,12 @@ type Bacteria struct {
   AttackRange float64
   ResistEnzyme ResistEnzyme
   linage int
+  id int
 }
 
 type Petri struct {
-  size Size
-  allBacteria []*Bacteria
+  radius float64
+  allBacteria []Bacteria
 }
 
 
