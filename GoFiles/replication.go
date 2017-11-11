@@ -12,7 +12,7 @@ import (
 func (b *bacteria) CanReplicate() bool {
   // This function tests whether a bacterium has enough energy to replicate.
   // If it has energyCap greater than certain point, the function returns true.
-  if b.energyCap > 80 {
+  if b.energyCap > b.repEnergy {
     return true
   }
   return false
@@ -25,13 +25,14 @@ func (b *bacteria) Replication() {
   }
 }
 
-// How big is our Petri dish?????
-func (b *bacteria) CreateDaughterBac() {
+func (b *bacteria) CreateDaughterBac(p Petri) {
   // Daughter cell is created at an arbitrary location next to parent
-  distToDaughter := 5
+  distToDaughter := b.sizeRadius*2
   theta := RandomTheta()
-  x := b.location.coorX + distToDaughter*math.Cos(theta)
-  y := b.location.coorY + distToDaughter*math.Sin(theta)
+  x := b.position.coorX + distToDaughter*math.Cos(theta)
+  y := b.position.coorY + distToDaughter*math.Sin(theta)
+  // create a daughter bacterium at a location x, y
+  InitializeBacterium(x, y)
 }
 
 func RandomTheta() float64 {
@@ -40,6 +41,6 @@ func RandomTheta() float64 {
 }
 
 // Does this function exist already?
-func InitializeBacterium() {
+func InitializeBacterium(x, y float64) {
 
 }

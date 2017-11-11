@@ -7,11 +7,34 @@ import (
 
 )
 
+//--------------------------------------------------------------------------
+// This is a model bacteria to test antibiotic.go
+type Bacteria struct {
+  currentEnergy float64
+  energyCapacity float64
+  ABenzyme ABenzyme
+  resistEnzyme ResistEnzyme
+}
 
-func (b *Bacteria) Attack() {
+type ABenzyme struct {
+  lock int
+  potency int
+}
+
+type ResistEnzyme struct {
+  key int
+  potency int
+}
+
+func Test() {
+  
+}
+//--------------------------------------------------------------------------
+
+func (b *Bacteria) Attack(p Petri) {
   // scan bacteria in attack range and list them under targets
   var targets []*Bacteria
-  targets = b.OthersInRange(b.location.Petri.allBacteria)
+  targets = b.OthersInRange(Petri.allBacteria)
   for target := range targets {
     if b.ABenzyme.lock != target.ResistEnzyme.key {
       b.InflictDamage(target, b.ABenzyme.potency)
@@ -24,7 +47,7 @@ func (b *Bacteria) Attack() {
 
 // for a given bacterium, SenseOther function determines wheter
 // there are other bacteria near by to attack
-func (b *Bacteria) OthersInRange(all []*Bacteria) []*Bacteria {
+func (b *Bacteria) OthersInRange(all []Bacteria) []*Bacteria {
   var inRange []*Bacteria
   for bacterium := range all {
     range = b.attackRange + bacterium.size.radius
