@@ -46,7 +46,8 @@ type DNA struct {
 	boundsLow float64							// Represents some bounds on the values individual gene elements can take
 	boundsHigh float64
 	geneSize int								// Represents the length of each gene
-	sampleSize int								// Represents the number of samples chosen during a selection event per gene 
+	sampleSize int
+	lksize int								// Represents the number of samples chosen during a selection event per gene 
 }
 
 // ********************************************************* DNA Methods and Related Functions *********************************************************************************************
@@ -95,6 +96,8 @@ func ReadDNAFile(filename string) []string {
 
 func BuildDNA(fileLines []string) DNA {
 
+	// Converts the line by line file into a valid DNA object
+
 	var fullDNA DNA
 	fullDNA.phenotypes = make(map[string]Phenotype)
 	fullDNA.genome = make(map[string]Gene)
@@ -129,7 +132,8 @@ func BuildDNA(fileLines []string) DNA {
 			fullDNA.makePhen(currentLine)
 		}
 		if currentState == "genes" {
-			fullDNA.makeGene(fileLines[i])
+			currentLine := strings.Split(fileLines[i], ",")
+			fullDNA.makeGene(currentLine)
 		}
 		if currentState == "edges" {
 			currentLine := strings.Split(fileLines[i], ",")
@@ -139,7 +143,7 @@ func BuildDNA(fileLines []string) DNA {
 	return fullDNA
 }
 
-func (dna *DNA) makeConfig(currentLine []string) {
+func (dna *DNA) MakeConfig(currentLine []string) {
 
 	configVal, err := strconv.ParseFloat(currentLine[1], 64)				
 	if err != nil {
@@ -165,11 +169,16 @@ func (dna *DNA) makeConfig(currentLine []string) {
 	if currentLine[0] == "Sample Size" {
 		dna.sampleSize = int(configVal)
 	}
+	if currentLine[0] == "LK Size" {
+		dna.lksize = int(configVal)
+	}
 
 }
 
-func (dna *DNA) makePhen(currentLine []string) {									// makeXXX DNA methods construct parts of the DNA (phenotypes, genes, edges)
+// MakeXXX DNA methods construct parts of the DNA (phenotypes, genes, edges)
 
+func (dna *DNA) MakePhen(currentLine []string) {									
+	
 	var phenotype Phenotype
 	phenName := currentLine[0]
 	phenotype.aggFunction = currentLine[1]
@@ -178,14 +187,20 @@ func (dna *DNA) makePhen(currentLine []string) {									// makeXXX DNA methods 
 
 }
 
-func (dna *DNA) makeGene(currentLine string) {
+func (dna *DNA) MakeGene(currentLine []string) {
 
-	gene := make(Gene, dna.geneSize)
-	geneName := currentLine
-	dna.genome[geneName] = gene
+	if currentLine[1] == "normal" {
+		gene := make(Gene, dna.geneSize)
+		geneName := currentLine
+		dna.genome[geneName] = gene
+	} else if currentLine[1] == "lk" {
+		gene := make(Gene, dna.lksize)
+		geneName := currentLine
+		dna.genome[geneName] = gene
+	}
 }
 
-func (dna *DNA) makeEdge(currentLine []string) {
+func (dna *DNA) MakeEdge(currentLine []string) {
 
 	if len(currentLine) != 4 {
 		fmt.Println("Wrong number of arguments for edge")
