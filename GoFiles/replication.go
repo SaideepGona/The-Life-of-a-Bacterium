@@ -9,30 +9,41 @@ import (
   "time"
 )
 
-func (b *bacteria) CanReplicate() bool {
+func (b *Bacteria) CanReplicate(p Petri) bool {
   // This function tests whether a bacterium has enough energy to replicate.
   // If it has energyCap greater than certain point, the function returns true.
-  if b.energyCap > b.repEnergy {
+  if b.currentEnergy > b.repEnergy && b.IsThereSpace(p) {
     return true
   }
   return false
 }
 
-func (b *bacteria) Replication() {
-  // if CanReplicate returns true, bacterium can undergo replication
-  if b.CanReplicate() == true {
-    b.CreateDaughterBac()
+func (b *Bacteria) IsThereSpace(p Petri) bool {
+  for _, bac := range p.allBacteria {
+    if b.DistToTarget(bac) < 2*b.sizeRadius {
+      return true
+    }
   }
+  return false
 }
 
-func (b *bacteria) CreateDaughterBac(p Petri) {
+func (b *Bacteria) Replication(p Petri) {
+  // if CanReplicate returns true, bacterium can undergo replication
+  if b.CanReplicate(p) {
+    b.CreateDaughterBac(p)
+  }
+  
+  // b.BurnEnergy(Replication, 1)
+}
+
+func (b *Bacteria) CreateDaughterBac(p Petri) {
   // Daughter cell is created at an arbitrary location next to parent
   distToDaughter := b.sizeRadius*2
   theta := RandomTheta()
   x := b.position.coorX + distToDaughter*math.Cos(theta)
   y := b.position.coorY + distToDaughter*math.Sin(theta)
   // create a daughter bacterium at a location x, y
-  InitializeBacterium(x, y)
+  p.allBacteria = append(p.allBacteria, b.InitializeBacterium(x, y))
 }
 
 func RandomTheta() float64 {
@@ -41,6 +52,15 @@ func RandomTheta() float64 {
 }
 
 // Does this function exist already?
-func InitializeBacterium(x, y float64) {
-
+func (b *Bacteria) InitializeBacterium(x, y float64) Bacteria {
+  var newBact Bacteria
+  newBact.attackRange = b.attackRange
+  newBact.ABenzyme = b.ABenzyme
+  newBact.resistEnzyme = b.resistEnzyme
+  newBact.currentEnergy = 50
+  newBact.energyCapacity = b.energyCapacity
+  newBact.repEnergy = b.repEnergy
+  newBact.position.coorX = x
+  newBact.position.coorY = y
+  return newBact
 }

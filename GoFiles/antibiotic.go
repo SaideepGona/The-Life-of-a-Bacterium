@@ -4,71 +4,65 @@
 package main
 
 import (
-
+ "math"
+ "fmt"
 )
 
-//--------------------------------------------------------------------------
-// This is a model bacteria to test antibiotic.go
-type Bacteria struct {
-  currentEnergy float64
-  energyCapacity float64
-  ABenzyme ABenzyme
-  resistEnzyme ResistEnzyme
-}
+// REMEMBER TO BURN ENERGY
 
-type ABenzyme struct {
-  lock int
-  potency int
-}
-
-type ResistEnzyme struct {
-  key int
-  potency int
-}
-
-func Test() {
-  
-}
 //--------------------------------------------------------------------------
 
-func (b *Bacteria) Attack(p Petri) {
+func (b *Bacteria) Attack(p Petri, new []Bacteria) []Bacteria {
   // scan bacteria in attack range and list them under targets
-  var targets []*Bacteria
-  targets = b.OthersInRange(Petri.allBacteria)
-  for target := range targets {
-    if b.ABenzyme.lock != target.ResistEnzyme.key {
-      b.InflictDamage(target, b.ABenzyme.potency)
-    } else if b.ABenzyme.lock == target.ResistEnzyme.key && b.ABenzyme.potency > target.ResistEnzyme.potency {
-      attackDamage = b.ABenzyme.potency - target.ResistEnzyme.potency
-      b.InflictDamage(target, attackDamage)
+  var targets []Bacteria
+  targets = b.OthersInRange(p.allBacteria)
+  for _, target := range targets {
+    if b.ABenzyme.lock != target.resistEnzyme.key {
+      target.currentEnergy = b.InflictDamage(target, b.ABenzyme.potency)
+    } else if b.ABenzyme.lock == target.resistEnzyme.key && b.ABenzyme.potency > target.resistEnzyme.potency {
+      attackDamage := b.ABenzyme.potency - target.resistEnzyme.potency
+      target.currentEnergy = b.InflictDamage(target, attackDamage)
     }
+    new = append(new, target)
   }
+  fmt.Println("new")
+  fmt.Println(new)
+  return new
 }
 
 // for a given bacterium, SenseOther function determines wheter
 // there are other bacteria near by to attack
-func (b *Bacteria) OthersInRange(all []Bacteria) []*Bacteria {
-  var inRange []*Bacteria
-  for bacterium := range all {
-    range = b.attackRange + bacterium.size.radius
-    if b.DistToTarget(bacterium) <= range {
+func (b *Bacteria) OthersInRange(all []Bacteria) []Bacteria {
+  var inRange []Bacteria
+  for _, bacterium := range all {
+    r := b.attackRange // + bacterium.size.radius
+    self := b.position
+    if b.DistToTarget(bacterium) <= r && bacterium.position != self {
       inRange = append(inRange, bacterium)
     }
   }
+  fmt.Println("targets")
+  fmt.Println(inRange)
   return inRange
 }
 
-func (b *Bacteria) DistToTarget(target *Bacteria) float64 {
-  deltaX := b.location.coorX - target.location.coorX
-  deltaY := b.location.coorY - target.location.coorY
+func (b *Bacteria) DistToTarget(target Bacteria) float64 {
+  deltaX := b.position.coorX - target.position.coorX
+  deltaY := b.position.coorY - target.position.coorY
   dist := math.Sqrt(deltaX*deltaX + deltaY*deltaY)
   return dist
 }
 
 // Damage can range from 0 to 9
-func (b *Bacteria) InflictDamage(t *Bacteria, damage float64) {
-  t.energyCap -= damage*10
-  if t.energyCap < 0 {
+func (b *Bacteria) InflictDamage(t Bacteria, damage float64) float64 {
+  inflictedDamage := damage*10
+  t.currentEnergy -= inflictedDamage
+  fmt.Println("damage")
+  fmt.Println(inflictedDamage)
+  fmt.Println("energy left")
+  fmt.Println(t.currentEnergy)
+  if t.currentEnergy < 0 {
     // Die!
   }
+  return t.currentEnergy
 }

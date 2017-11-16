@@ -27,7 +27,7 @@ type Bacteria struct {
 }
 
 type Coords struct {
-coorX float64
+  coorX float64
 	coorY float64
 }
 
@@ -38,12 +38,12 @@ type Petri struct {
 
 type ABenzyme struct {
   lock int
-  potency int
+  potency float64
 }
 
 type ResistEnzyme struct {
   key int
-  potency int
+  potency float64
 }
 
 type FoodPackage struct {
