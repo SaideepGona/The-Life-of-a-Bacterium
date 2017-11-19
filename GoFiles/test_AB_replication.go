@@ -2,8 +2,8 @@ package main
 
 import (
     "fmt"
+    "math"
     "math/rand"
-    "time"
 )
 
 // REPLICATION AND FIGHT --- BURN ENERGY
@@ -40,20 +40,43 @@ type Petri struct {
 
 }
 
-func main() {
+func PickInitialLocation(p Petri) (float64, float64) {
+  theta := RandomTheta()
+  dist := rand.Intn(int(math.Floor(p.radius)))
+  x := float64(dist)*math.Cos(theta)
+  y := float64(dist)*math.Sin(theta)
+  return x, y
+}
 
+func TooClose(x, a, y, b float64, bac Bacteria) bool {
+  deltaX := x - a
+  deltaY := y - b
+  dist := math.Sqrt(deltaX*deltaX + deltaY*deltaY)
+  if dist < 2*bac.sizeRadius {
+    return true
+  }
+  return false
+}
+
+func main() {
   bactSlice := make([]Bacteria,0)
-  for i := 0; i < 3; i++ {
-    rand.Seed(time.Now().UnixNano())
-    n := rand.Float64()
-    fmt.Println("n")
-    fmt.Println(n)
+  var dish Petri
+  dish.radius = 10
+  var a, b float64
+  for i := 0; i < 1; i++ {
     var newBact Bacteria
+    newBact.sizeRadius = 2
+    x, y := PickInitialLocation(dish)
+    for (x == a && y == b) || TooClose(x, a, y, b, newBact) {
+      x, y = PickInitialLocation(dish)
+    }
+    a = x
+    b = y
     newBact.attackRange = 5
     newBact.currentEnergy = 90
     newBact.energyCapacity = 100
-    newBact.position.coorX = n*10
-    newBact.position.coorY = n*10
+    newBact.position.coorX = x
+    newBact.position.coorY = y
     newBact.ABenzyme.lock = i+4
     newBact.ABenzyme.potency = float64(i+4)
     newBact.resistEnzyme.key = 7-i
@@ -63,9 +86,7 @@ func main() {
     bactSlice = append(bactSlice, newBact)
   }
 
-  var dish Petri
   dish.allBacteria = bactSlice
-  dish.radius = 10
 
   //fmt.Println(dish)
 //  var additionalBact Bacteria
@@ -88,9 +109,10 @@ func main() {
   fmt.Println(dish)
   */
 
-  for i:=0; i<len(dish.allBacteria); i++ {
-    dish.allBacteria[i].Replication(dish)
-  }
+  var pointerToDish *Petri
+  pointerToDish = &dish
+  pointerToDish.Replication()
+
   fmt.Println("result")
   fmt.Println(dish)
 }
