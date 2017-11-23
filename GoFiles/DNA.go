@@ -223,6 +223,12 @@ func (dna *DNA) MakeEdge(currentLine []string) {
 
 // ----------------- MUTATING THE DNA --------------------------
 
+func (petri *Petri) MutateAll() {
+	for _, bacteria := range petri.allBacteria {
+		bacteria.DNA.MutateDNA()
+	} 
+}
+
 func (dna *DNA) MutateDNA() {
 
 	/*
@@ -237,7 +243,7 @@ func (dna *DNA) MutateDNA() {
 func (gene *Gene) Mutate(mutationRate, mutationMagnitude float64) {
 
 	/*
-	Mutates input genome via pointer
+	Mutates input gene via pointer
 	*/
 
 	for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
