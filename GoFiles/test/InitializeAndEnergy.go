@@ -7,33 +7,9 @@ import (
   "fmt"
   "bufio"
   "strings"
-  "math"
+//  "math"
 )
-type Bacteria struct {
-  size Size
-  location Location
-  //ABenzyme ABenzyme
-  AttackRange float64
-  //ResistEnzyme ResistEnzyme
-  linage int
-  energy float64
-}
 
-type Petri struct {
-  size Size
-  allBacteria []Bacteria
-}
-
-
-type Location struct {
-  Petri Petri
-  coorX, coorY int
-}
-
-type Size struct {
-  centerX, centerY float64
-  radius float64
-}
 
 func ReadFile(filename string) []string {
     // open the file and make sure all went well
@@ -59,7 +35,7 @@ func ReadFile(filename string) []string {
     in.Close()
     return lines
 }
-
+/*
 func IsIn(x,y,width int) bool{ // to check whether a point is in side a circle in a square
      distanceToCenter :=math.Sqrt(float64((x-width/2)*(x-width/2)+(y-width/2)*(y-width/2)))
      if distanceToCenter > float64(width/2){
@@ -91,6 +67,7 @@ func (p *Petri) ReadToInitialize(filename string) {
 }
 }
 }
+*/
 
 func (p *Petri) ReadEnergyResourceFile(filename string)  {
      lines :=  ReadFile(filename)
@@ -145,10 +122,10 @@ func (p *Petri) ReadEnergyResourceFile(filename string)  {
       }
      carbon,_ := strconv.ParseFloat(items7[1],64)
      for i := range p.allBacteria{
-     p.allBacteria[i].energy=(agar+minerals+pentose+sunlight+temperature+oxygen+carbon)/7.0
+     p.allBacteria[i].currentEnergy = (agar+minerals+pentose+sunlight+temperature+oxygen+carbon)/7.0
    }
 }
-
+/*
 func main(){
   var p Petri
   p.ReadToInitialize("petriBact.txt")
@@ -156,4 +133,4 @@ func main(){
   fmt.Println(p.allBacteria[0].location.coorX,p.allBacteria[0].location.coorY)
   fmt.Println(p.allBacteria[1].location.coorX,p.allBacteria[1].location.coorY)
   fmt.Println(p.allBacteria[0].energy)
-}
+}*/
