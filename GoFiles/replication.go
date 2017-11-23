@@ -18,6 +18,8 @@ func (b *Bacteria) CanReplicate(p *Petri) bool {
   return false
 }
 
+
+
 func (b *Bacteria) IsThereSpace(p *Petri) bool {
   if len(p.allBacteria) == 1 {
     return true
@@ -40,6 +42,7 @@ func (p *Petri) Replication() {
     if b.CanReplicate(p) {
       p.CreateDaughterBac(b)
     }
+    b.currentEnergy -= 40
   }
   // b.BurnEnergy(Replication, 1)
 }
@@ -78,7 +81,7 @@ func InitializeBacterium(x, y float64, b Bacteria) Bacteria {
   newBact.attackRange = b.attackRange
   newBact.ABenzyme = b.ABenzyme
   newBact.resistEnzyme = b.resistEnzyme
-  newBact.currentEnergy = 50
+  newBact.currentEnergy = 40
   newBact.energyCapacity = b.energyCapacity
   newBact.repEnergy = b.repEnergy
   newBact.position.coorX = x
