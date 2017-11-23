@@ -1,5 +1,5 @@
 
-// Struct and methods for Bacterial DNA
+// Struct and methods for Bacterial DNA - Saideep Gona
 
 /*
 
@@ -20,8 +20,8 @@ import (
 	"strings"
 	"strconv"
 	"math/rand"
+	"math"
 )
-
 
 type Phenotype struct {							// A phenotype and associated aggregate function information
 	aggFunction string
@@ -46,44 +46,57 @@ type DNA struct {
 	boundsLow float64							// Represents some bounds on the values individual gene elements can take
 	boundsHigh float64
 	geneSize int								// Represents the length of each gene
-	sampleSize int								// Represents the number of samples chosen during a selection event per gene 
+	sampleSize int
+	lksize int								// Represents the number of samples chosen during a selection event per gene 
 }
 
 // ********************************************************* DNA Methods and Related Functions *********************************************************************************************
 
 // ----------------- Read DNA from File and Build Genome Template --------------------------
 
+func MakeNewDNA() DNA {
+
+	// Creates brand new DNA object using the readin file format
+
+	filePath := os.Getwd() + "/../OtherFiles/DNA_blueprint.txt"
+	dnaFile := ReadDNAFile(filePath)
+	return BuildDNA(dnaFile)
+
+}
+
 func ReadDNAFile(filename string) []string {
 	
-		// TAKEN DIRECTLY FROM HW5 WRITEUP
-		// Opens a text file and creates a line-by-line slice of the contents
-	
-		in, err := os.Open(filename)
-		if err != nil {
-			fmt.Println("Error: couldn’t read in the DNA template")
-			os.Exit(1)
-		}
-		// create the variable to hold the lines
-		var lines []string = make([]string, 0)
-		// for every line in the file
-		scanner := bufio.NewScanner(in)
-		for scanner.Scan() {
-		// append it to the lines slice
-			lines = append(lines, scanner.Text())
-		}
-		
-		// check that all went ok
-		if scanner.Err() != nil {
-			fmt.Println("Sorry: there was some kind of error during the file reading")
-			os.Exit(1)
-		}
-		// close the file and return the lines
-		in.Close()
-	
-		return lines
+	// TAKEN DIRECTLY FROM HW5 WRITEUP
+	// Opens a text file and creates a line-by-line slice of the contents
+
+	in, err := os.Open(filename)
+	if err != nil {
+		fmt.Println("Error: couldn’t read in the DNA template")
+		os.Exit(1)
 	}
+	// create the variable to hold the lines
+	var lines []string = make([]string, 0)
+	// for every line in the file
+	scanner := bufio.NewScanner(in)
+	for scanner.Scan() {
+	// append it to the lines slice
+		lines = append(lines, scanner.Text())
+	}
+	
+	// check that all went ok
+	if scanner.Err() != nil {
+		fmt.Println("Sorry: there was some kind of error during the file reading")
+		os.Exit(1)
+	}
+	// close the file and return the lines
+	in.Close()
+
+	return lines
+}
 
 func BuildDNA(fileLines []string) DNA {
+
+	// Converts the line by line file into a valid DNA object
 
 	var fullDNA DNA
 	fullDNA.phenotypes = make(map[string]Phenotype)
@@ -119,20 +132,18 @@ func BuildDNA(fileLines []string) DNA {
 			fullDNA.makePhen(currentLine)
 		}
 		if currentState == "genes" {
-			fullDNA.makeGene(fileLines[i])
+			currentLine := strings.Split(fileLines[i], ",")
+			fullDNA.makeGene(currentLine)
 		}
 		if currentState == "edges" {
 			currentLine := strings.Split(fileLines[i], ",")
 			fullDNA.makeEdge(currentLine)
 		}
-
 	}
-
 	return fullDNA
-
 }
 
-func (dna *DNA) makeConfig(currentLine []string) {
+func (dna *DNA) MakeConfig(currentLine []string) {
 
 	configVal, err := strconv.ParseFloat(currentLine[1], 64)				
 	if err != nil {
@@ -158,11 +169,16 @@ func (dna *DNA) makeConfig(currentLine []string) {
 	if currentLine[0] == "Sample Size" {
 		dna.sampleSize = int(configVal)
 	}
+	if currentLine[0] == "LK Size" {
+		dna.lksize = int(configVal)
+	}
 
 }
 
-func (dna *DNA) makePhen(currentLine []string) {									// makeXXX DNA methods construct parts of the DNA (phenotypes, genes, edges)
+// MakeXXX DNA methods construct parts of the DNA (phenotypes, genes, edges)
 
+func (dna *DNA) MakePhen(currentLine []string) {									
+	
 	var phenotype Phenotype
 	phenName := currentLine[0]
 	phenotype.aggFunction = currentLine[1]
@@ -171,14 +187,20 @@ func (dna *DNA) makePhen(currentLine []string) {									// makeXXX DNA methods 
 
 }
 
-func (dna *DNA) makeGene(currentLine string) {
+func (dna *DNA) MakeGene(currentLine []string) {
 
-	gene := make(Gene, dna.geneSize)
-	geneName := currentLine
-	dna.genome[geneName] = gene
+	if currentLine[1] == "normal" {
+		gene := make(Gene, dna.geneSize)
+		geneName := currentLine
+		dna.genome[geneName] = gene
+	} else if currentLine[1] == "lk" {
+		gene := make(Gene, dna.lksize)
+		geneName := currentLine
+		dna.genome[geneName] = gene
+	}
 }
 
-func (dna *DNA) makeEdge(currentLine []string) {
+func (dna *DNA) MakeEdge(currentLine []string) {
 
 	if len(currentLine) != 4 {
 		fmt.Println("Wrong number of arguments for edge")
@@ -201,6 +223,12 @@ func (dna *DNA) makeEdge(currentLine []string) {
 
 // ----------------- MUTATING THE DNA --------------------------
 
+func (petri *Petri) MutateAll() {
+	for _, bacteria := range petri.allBacteria {
+		bacteria.DNA.MutateDNA()
+	} 
+}
+
 func (dna *DNA) MutateDNA() {
 
 	/*
@@ -208,30 +236,31 @@ func (dna *DNA) MutateDNA() {
 	*/
 
 	for gene := range dna.genome {
-		dna.genome[gene].Mutate(dna.mutRate, dna.mutMagnitude)
+		dna.genome[gene].Mutate(dna.mutRate, dna.mutMagnitude,dna.boundsLow,dna.boundsHigh)
 	}
 }
 
-func (gene Gene) Mutate (mutationRate, mutationMagnitude float64) {
+func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 
 	/*
-	Mutates input genome via pointer
+	Mutates input gene via pointer
 	*/
 
 	for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
-
 		newRoll := rand.Float64()					// Roll to see if mutation occurs
-
 		if newRoll < mutationRate {
-
 			directionRoll := rand.Intn(1)			// Roll to see if mutation is positive or negative
-
 			if directionRoll == 0 {
 				gene[i] += mutationMagnitude
+				if gene[i] > high {
+					gene[i] -= mutationMagnitude/2.0
+				}
 			} else {
 				gene[i] -= mutationMagnitude
+				if gene[i] < low {
+					gene[i] += mutationMagnitude/2.0
+				}
 			}
-
 		}
 	}
 }
@@ -240,26 +269,41 @@ func (gene Gene) Mutate (mutationRate, mutationMagnitude float64) {
 
 // ----------------- SAMPLING METHODS ----------------------------
 
-func (dna *DNA) PhenotypeSample(phenotypeName string) []float64 {
+func (dna *DNA) PhenotypeExpectation(PhenotypeName string) float64 {
+
+	weightedSum := 0.0
+	edges := dna.phenotypes[phenotypeName].edges
+
+	for i := 0; i < len(edges); i++ {
+
+		geneMean := Mean(edges[i].gene)
+		weight := edges.weight
+		weightedExpectation += weight*sampleMean
+
+	}
+	return weightedExpectation
+}
+
+func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
 
 	/*
 	Conducts sampling from all genes associated with a phenotype
 	*/
 
+	weightedSum := 0.0
 	edges := dna.phenotypes[phenotypeName].edges
-	fullSample := make([]float64,0)
-
 
 	for i := 0; i < len(edges); i++ {
 
 		newSample := dna.SampleGene(edges[i].gene)
-		fullSample = append(fullSample, newSample...)
+		sampleMean := Mean(newSample)
+		weight := edges.weight
+		weightedSum += weight*sampleMean
 
 	}
-
-	return fullSample
-
+	return weightedSum
 }
+
 
 func (dna *DNA) SampleGene(geneName string) []float64 {
 
@@ -268,7 +312,6 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 	*/
 
 	randIndex := rand.Perm(dna.geneSize)
-
 	sampleSlice := make([]float64, 0)
 
 	for i := 0; i < dna.sampleSize; i ++ {
@@ -276,20 +319,73 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 		sampleSlice = append(sampleSlice, dna.genome[geneName][randIndex[i]])
 
 	}
-
 	return sampleSlice
-
 } 
 
-// ----------------- EDGE FUNCTION LIBRARY ----------------------------			> 	This is for functions that act upon the output of a single-gene sample
+func Mean(list []float64) float64 {
 
-func mean(list []float64) float64 {
+	// Calculates mean from a slice of floats
+
 	var sum float64
+
 	for i := 0; i < len(list); i++{
 		sum += list[i]
 	}
 	return sum/float64(len(list))
 }
 
+func Logistic(inputVal float64, arguments []string) {
+
+	// Passes an input into a logistic function as well as arguments for the function and returns the output. 
+
+	floatArgs := make([]float64,0)
+
+	if len(arguments) != 3 {
+		fmt.Println("Wrong number of arguments to logistic function")
+	}
+	
+	for _,arg := range arguments {
+		argVal, err := strconv.ParseFloat(arg, 64)				
+		if err != nil {
+			fmt.Println("Error: Arg value for logistic cannot be read")
+			os.Exit(1)
+		}
+		floatArgs = append(floatArgs, argVal)
+	}
+
+	max := floatArgs[0]
+	steepness := floatArgs[1]
+	midpoint := floatArgs[2]
+
+	output := max/(1.0 + Exp(((-1)*steepness)*(inputVal-midpoint)))
+	return output
+
+}
+
+// ----------------- END SAMPLING METHODS ------------------------
+
+// ----------------- DNA PLOTTING METHODS ------------------------
+
+func AnimatePhenotypes(phenMap map[string][]float64) {
+
+	// Animates the average values of all phenotypes over time
+
+	animationImages := make([]image.Image,0)
+
+	phenotypeList := make([]string, 0)
+	phenotypeProgressions := make([][]float64, 0)
+
+	for phen, list := range phenMap {									// Converts phenotype map into a slice of phenotypes and corresponding data progression
+		phenotypeList = append(phenotypeList, phen)
+		phenotypeProgressions := append(phenotypeProgressions, list)
+	}
+
+	numSteps := len(phenotypeProgressions[0])
+
+
+
+}
+
+func DrawSingleStep()
 
 

@@ -4,47 +4,65 @@
 package main
 
 import (
-
+ "math"
+ "fmt"
 )
 
+// REMEMBER TO BURN ENERGY
 
-func (b *Bacteria) Attack() {
+//--------------------------------------------------------------------------
+
+func (b *Bacteria) Attack(p Petri, new []Bacteria) []Bacteria {
   // scan bacteria in attack range and list them under targets
-  var targets []*Bacteria
-  targets = b.OthersInRange(b.location.Petri.allBacteria)
-  for target := range targets {
-    if b.ABenzyme.lock != target.ResistEnzyme.key {
-      b.InflictDamage(target, b.ABenzyme.potency)
-    } else if b.ABenzyme.lock == target.ResistEnzyme.key {
-      if b.ABenzyme.potency > target.ResistEnzyme.potency {
-        attackDamage = b.ABenzyme.potency - target.ResistEnzyme.potency
-        b.InflictDamage(target, attackDamage)
-      }
+  var targets []Bacteria
+  targets = b.OthersInRange(p.allBacteria)
+  for _, target := range targets {
+    if b.ABenzyme.lock != target.resistEnzyme.key {
+      target.currentEnergy = b.InflictDamage(target, b.ABenzyme.potency)
+    } else if b.ABenzyme.lock == target.resistEnzyme.key && b.ABenzyme.potency > target.resistEnzyme.potency {
+      attackDamage := b.ABenzyme.potency - target.resistEnzyme.potency
+      target.currentEnergy = b.InflictDamage(target, attackDamage)
     }
+    new = append(new, target)
   }
+  fmt.Println("new")
+  fmt.Println(new)
+  return new
 }
 
 // for a given bacterium, SenseOther function determines wheter
 // there are other bacteria near by to attack
-func (b *Bacteria) OthersInRange(all []*Bacteria) []*Bacteria {
-  var inRange []*Bacteria
-  for bacterium := range all {
-    attackRange = b.AttackRange + bacterium.size.radius
-    if b.DistToTarget(bacterium) <= attackRange {
+func (b *Bacteria) OthersInRange(all []Bacteria) []Bacteria {
+  var inRange []Bacteria
+  for _, bacterium := range all {
+    r := b.attackRange // + bacterium.size.radius
+    self := b.position
+    if b.DistToTarget(bacterium) <= r && bacterium.position != self {
       inRange = append(inRange, bacterium)
     }
   }
+  fmt.Println("targets")
+  fmt.Println(inRange)
   return inRange
 }
 
-func (b *Bacteria) DistToTarget(target *Bacteria) float64 {
-  deltaX := b.location.coorX - target.location.coorX
-  deltaY := b.location.coorY - target.location.coorY
+func (b *Bacteria) DistToTarget(target Bacteria) float64 {
+  deltaX := b.position.coorX - target.position.coorX
+  deltaY := b.position.coorY - target.position.coorY
   dist := math.Sqrt(deltaX*deltaX + deltaY*deltaY)
   return dist
 }
 
-// potency is an integer ranging from 1 to 9
-func (b *Bacteria) InflictDamage(t *Bacteria, damage float64) {
-  t.size.radius = t.size.radius*damage/10
+// Damage can range from 0 to 9
+func (b *Bacteria) InflictDamage(t Bacteria, damage float64) float64 {
+  inflictedDamage := damage*10
+  t.currentEnergy -= inflictedDamage
+  fmt.Println("damage")
+  fmt.Println(inflictedDamage)
+  fmt.Println("energy left")
+  fmt.Println(t.currentEnergy)
+  if t.currentEnergy < 0 {
+    // Die!
+  }
+  return t.currentEnergy
 }
