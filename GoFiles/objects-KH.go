@@ -8,6 +8,7 @@ type Bacteria struct {
   AttackRange float64
   ResistEnzyme ResistEnzyme
   linage int
+  energy float64
 }
 
 type Petri struct {

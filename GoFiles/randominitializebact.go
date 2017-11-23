@@ -8,7 +8,7 @@ import (
   "time"
 )
 
-func InitialBact(dish Petri, number int) dish{
+func (dish *Petri)InitialBact(number int){
   dish.size.centerX := strconv.Atoi(os.Args[1])
   dish.size.centerY := strconv.Atoi(os.Args[2])
   rand.Seed(time.Now().UTC().UnixNano())
@@ -19,5 +19,4 @@ func InitialBact(dish Petri, number int) dish{
   dish.allBacteria[i].size.centerX = x
   dish.allBacteria[i].size.centerY = y
 }
-  return dish
 }
