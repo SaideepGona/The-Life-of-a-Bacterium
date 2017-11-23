@@ -3,12 +3,15 @@ import(
   "fmt"
   "math"
   "math/rand"
-  "time"
+  //"time"
 )
-
+/*
 type Bacteria struct {
   position Coords
   sizeRadius float64
+  currentEnergy float64
+  energyEfficiency float64
+  stepSize float64
   //id int
 }
 
@@ -20,7 +23,7 @@ type Petri struct {
 type Coords struct {
   coorX float64
 	coorY float64
-}
+}*/
 
 //r is the radius of bacteria, R is the radius of petridish, x is the x coordiante of the center of circle and y is the y coordinate of the center of circle
 func InField(x, y, X, Y float64, p Petri) bool {
@@ -73,37 +76,59 @@ func IsOverlap(x, y float64, i int, p Petri)bool{
   return false
 }
 
+func PermuteList(p Petri)[]int{
+  list := rand.Perm(len(p.allBacteria))
+  for i, _ := range list {
+    list[i]++
+  }
+  fmt.Println("list", list)
+  return list
+}
+
 /*This function generates a random step that is within the petridish*/
-func RandomStep(d, X, Y float64, p Petri) {
-  index := rand.Intn(len(p.allBacteria))
+func (p *Petri) RandomStep(X, Y float64) {
+  //index := rand.Intn(len(p.allBacteria))
   //fmt.Println("index", index)
-	a, b := p.allBacteria[index].position.coorX, p.allBacteria[index].position.coorY
-	for (a == p.allBacteria[index].position.coorX && b == p.allBacteria[index].position.coorY) || !InField(a, b, X, Y, p) || IsOccupied(a, b, index, p)==true || IsOverlap(a, b, index, p)==true{
-    /*fmt.Println("x", a)
-    fmt.Println("y", b)
-    fmt.Println("in field", InField(a,b,X,Y,p))
-    fmt.Println("IsOccupied", IsOccupied(a,b,index, p))
-    fmt.Println("IsOverlap", IsOverlap(a, b, index, p))*/
-		randomTheta := RandomDelta()
-		a = p.allBacteria[index].position.coorX + math.Cos(randomTheta)*d           //a and b are updated and they are the new coordinates
-		b = p.allBacteria[index].position.coorY + math.Sin(randomTheta)*d
-	}
-  p.allBacteria[index].position.coorX = a
-  p.allBacteria[index].position.coorY = b
-  /*fmt.Println("updateda", a)
-  fmt.Println("updatedb", b)*/
+  randomlist:=PermuteList(*p)
+  for index:=0; index< len(randomlist); index++{
+	   a, b := (*p).allBacteria[index].position.coorX, (*p).allBacteria[index].position.coorY
+     energyconsumed:=EnergyBurnMovement(*p, index)
+     //fmt.Println("energyconsumed", energyconsumed)
+     if energyconsumed<=(*p).allBacteria[index].currentEnergy{
+	      for (a == (*p).allBacteria[index].position.coorX && b == (*p).allBacteria[index].position.coorY) || !InField(a, b, X, Y, *p) || IsOccupied(a, b, index, *p)==true || IsOverlap(a, b, index, *p)==true{
+          /*fmt.Println("x", a)
+          fmt.Println("y", b)
+          fmt.Println("in field", InField(a,b,X,Y,p))
+          fmt.Println("IsOccupied", IsOccupied(a,b,index, p))
+          fmt.Println("IsOverlap", IsOverlap(a, b, index, p))*/
+		      randomTheta := RandomDelta()
+		      a = p.allBacteria[index].position.coorX + math.Cos(randomTheta)*p.allBacteria[index].stepSize           //a and b are updated and they are the new coordinates
+		      b = p.allBacteria[index].position.coorY + math.Sin(randomTheta)*p.allBacteria[index].stepSize
+        }
+	    }
+      p.allBacteria[index].position.coorX = a
+      p.allBacteria[index].position.coorY = b
+      p.allBacteria[index].currentEnergy=p.allBacteria[index].currentEnergy-energyconsumed
+      /*fmt.Println("updateda", a)
+      fmt.Println("updatedb", b)*/
+  }
   fmt.Println(p)
 }
 
-func RandomWalk(d, X, Y float64, p Petri){
+func EnergyBurnMovement(p Petri, index int) float64{
+  energyConsumption:=p.allBacteria[index].stepSize*1*p.allBacteria[index].energyEfficiency
+  return energyConsumption
+}
+
+/*func RandomWalk(d, X, Y float64, p Petri){
   count:=0
   for count<2{
     RandomStep(d, X, Y, p)
     count=count+1
   }
   //fmt.Println("this is count", count)
-}
-
+}*/
+/*
 func main(){
   R:=50.0
   X:=R
@@ -111,7 +136,7 @@ func main(){
   bacteriaSlice:=make([]Bacteria, 0)
   for i:=0; i<2; i++{
     var newBact Bacteria
-    fmt.Println(newBact)
+    fmt.Println("newBact", newBact)
     bacteriaSlice=append(bacteriaSlice,newBact)
   }
   var p Petri
@@ -120,11 +145,17 @@ func main(){
   p.allBacteria[0].position.coorX=49
   p.allBacteria[0].position.coorY=49
   p.allBacteria[0].sizeRadius=2.0
+  p.allBacteria[0].stepSize=5.0
+  p.allBacteria[0].energyEfficiency=0.6
+  p.allBacteria[0].currentEnergy=20
   p.allBacteria[1].position.coorX=45
   p.allBacteria[1].position.coorY=45
   p.allBacteria[1].sizeRadius=2.0
+  p.allBacteria[1].stepSize=6.0
+  p.allBacteria[1].energyEfficiency=0.8
+  p.allBacteria[1].currentEnergy=30
   p.radius=50.0
   fmt.Println("p", p)
   //RandomStep(1.0, X, Y, p)
-  RandomWalk(5.0, X, Y, p)
-}
+  p.RandomStep(X, Y)
+}*/
