@@ -1,6 +1,6 @@
 package main
 import(
-  "fmt"
+//  "fmt"
   "math"
   "math/rand"
   //"time"
@@ -81,7 +81,7 @@ func PermuteList(p Petri)[]int{
   for i, _ := range list {
     list[i]++
   }
-  fmt.Println("list", list)
+  //fmt.Println("list", list)
   return list
 }
 
@@ -91,6 +91,7 @@ func (p *Petri) RandomStep(X, Y float64) {
   //fmt.Println("index", index)
   randomlist:=PermuteList(*p)
   for index:=0; index< len(randomlist); index++{
+     count:=0
 	   a, b := (*p).allBacteria[index].position.coorX, (*p).allBacteria[index].position.coorY
      energyconsumed:=EnergyBurnMovement(*p, index)
      //fmt.Println("energyconsumed", energyconsumed)
@@ -104,15 +105,21 @@ func (p *Petri) RandomStep(X, Y float64) {
 		      randomTheta := RandomDelta()
 		      a = p.allBacteria[index].position.coorX + math.Cos(randomTheta)*p.allBacteria[index].stepSize           //a and b are updated and they are the new coordinates
 		      b = p.allBacteria[index].position.coorY + math.Sin(randomTheta)*p.allBacteria[index].stepSize
+          count=count+1
+          if count==100{
+            break
+          }
         }
-	    }
-      p.allBacteria[index].position.coorX = a
-      p.allBacteria[index].position.coorY = b
-      p.allBacteria[index].currentEnergy=p.allBacteria[index].currentEnergy-energyconsumed
-      /*fmt.Println("updateda", a)
+	   }
+     if count<100{
+       p.allBacteria[index].position.coorX = a
+       p.allBacteria[index].position.coorY = b
+       p.allBacteria[index].currentEnergy=p.allBacteria[index].currentEnergy-energyconsumed
+     }
+       /*fmt.Println("updateda", a)
       fmt.Println("updatedb", b)*/
   }
-  fmt.Println(p)
+  //fmt.Println(p)
 }
 
 func EnergyBurnMovement(p Petri, index int) float64{
@@ -157,5 +164,6 @@ func main(){
   p.radius=50.0
   fmt.Println("p", p)
   //RandomStep(1.0, X, Y, p)
+  p.RandomStep(X, Y)
   p.RandomStep(X, Y)
 }*/

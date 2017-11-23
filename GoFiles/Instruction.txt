@@ -1,0 +1,6 @@
+  p Petri
+  p.InitianlizeFoodpackage(numFood int,radius float64). numFood is an int that stands for the number of food packages. radius is the radius that food package could have spread
+  p.InitializeBact(numBact int, radius float64).numBact is an int that stands for the number of bacteria
+  p.IsRandomMove(i int) i is the number of bacteria. The function should return a bool. If true, the bacteria is random moving. Else is searching for food
+  p.MovetoFood() If a bacteria is not randomly moving, it should be controlled by this function and move to foodpackage
+  p.DrawPetri(rBact,rFood float64)

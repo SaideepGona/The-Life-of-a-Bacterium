@@ -223,6 +223,12 @@ func (dna *DNA) MakeEdge(currentLine []string) {
 
 // ----------------- MUTATING THE DNA --------------------------
 
+func (petri *Petri) MutateAll() {
+	for _, bacteria := range petri.allBacteria {
+		bacteria.DNA.MutateDNA()
+	} 
+}
+
 func (dna *DNA) MutateDNA() {
 
 	/*
@@ -230,14 +236,14 @@ func (dna *DNA) MutateDNA() {
 	*/
 
 	for gene := range dna.genome {
-		dna.genome[gene].Mutate(dna.mutRate, dna.mutMagnitude)
+		dna.genome[gene].Mutate(dna.mutRate, dna.mutMagnitude,dna.boundsLow,dna.boundsHigh)
 	}
 }
 
-func (gene *Gene) Mutate(mutationRate, mutationMagnitude float64) {
+func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 
 	/*
-	Mutates input genome via pointer
+	Mutates input gene via pointer
 	*/
 
 	for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
@@ -246,8 +252,14 @@ func (gene *Gene) Mutate(mutationRate, mutationMagnitude float64) {
 			directionRoll := rand.Intn(1)			// Roll to see if mutation is positive or negative
 			if directionRoll == 0 {
 				gene[i] += mutationMagnitude
+				if gene[i] > high {
+					gene[i] -= mutationMagnitude/2.0
+				}
 			} else {
 				gene[i] -= mutationMagnitude
+				if gene[i] < low {
+					gene[i] += mutationMagnitude/2.0
+				}
 			}
 		}
 	}
@@ -322,12 +334,28 @@ func Mean(list []float64) float64 {
 	return sum/float64(len(list))
 }
 
-func Logistic(inputVal float64, arguments []float64) {
+func Logistic(inputVal float64, arguments []string) {
 
-	// Passes an input into a logistic function and returns the output. 
-	max := arguments[0]
-	steepness := arguments[1]
-	midpoint := arguments[2]
+	// Passes an input into a logistic function as well as arguments for the function and returns the output. 
+
+	floatArgs := make([]float64,0)
+
+	if len(arguments) != 3 {
+		fmt.Println("Wrong number of arguments to logistic function")
+	}
+	
+	for _,arg := range arguments {
+		argVal, err := strconv.ParseFloat(arg, 64)				
+		if err != nil {
+			fmt.Println("Error: Arg value for logistic cannot be read")
+			os.Exit(1)
+		}
+		floatArgs = append(floatArgs, argVal)
+	}
+
+	max := floatArgs[0]
+	steepness := floatArgs[1]
+	midpoint := floatArgs[2]
 
 	output := max/(1.0 + Exp(((-1)*steepness)*(inputVal-midpoint)))
 	return output
@@ -340,29 +368,21 @@ func Logistic(inputVal float64, arguments []float64) {
 
 func AnimatePhenotypes(phenMap map[string][]float64) {
 
+	// Animates the average values of all phenotypes over time
+
 	animationImages := make([]image.Image,0)
 
 	phenotypeList := make([]string, 0)
 	phenotypeProgressions := make([][]float64, 0)
 
-	for phen, list := range phenMap {
+	for phen, list := range phenMap {									// Converts phenotype map into a slice of phenotypes and corresponding data progression
 		phenotypeList = append(phenotypeList, phen)
 		phenotypeProgressions := append(phenotypeProgressions, list)
 	}
 
 	numSteps := len(phenotypeProgressions[0])
-	
-	for i := 1; i <= numSteps; i++ {
 
-		newPoints := make([]float64, 0)
-		for phen := 0; phen < len(phenotypeList); phen++ {
-			newPoints = append(newPoints, phenotypeProgressions[phen][i])
-		}
-		canv := DrawSingleStep(newPoints)
-		animationImages = append(animationImages, canv.img)
-	}
 
-	Process(animationImages, "Phenotypes")
 
 }
 

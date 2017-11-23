@@ -3,11 +3,20 @@
 
 func (dna *DNA) UpdateEE() {
 
-	phenotype = "Energy Efficiency"
-	newEERaw := dna.PhenotypeAverage(phenotype)
-	newEE := Logistic(newEERaw, dna.phenotype.)
+	// Updates energy efficiency
+
+	newEERaw := dna.PhenotypeAverage("EE")
+	newEE := Logistic(newEERaw, dna.phenotype.aggFuncArgs)
 	dna.energyEfficiancy = newEE
 
 }
 
-func (bact *Bacteria) BurnEnergy()
+func (p *Petri) UpdateAllEE() {
+
+	// Updates the energy efficiency for all bacteria in petri dish
+
+	for index, bacteria := range p.allBacteria {
+		bacteria.dna.UpdateEE()
+	}
+}
+
