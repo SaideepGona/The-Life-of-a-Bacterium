@@ -340,29 +340,21 @@ func Logistic(inputVal float64, arguments []float64) {
 
 func AnimatePhenotypes(phenMap map[string][]float64) {
 
+	// Animates the average values of all phenotypes over time
+
 	animationImages := make([]image.Image,0)
 
 	phenotypeList := make([]string, 0)
 	phenotypeProgressions := make([][]float64, 0)
 
-	for phen, list := range phenMap {
+	for phen, list := range phenMap {									// Converts phenotype map into a slice of phenotypes and corresponding data progression
 		phenotypeList = append(phenotypeList, phen)
 		phenotypeProgressions := append(phenotypeProgressions, list)
 	}
 
 	numSteps := len(phenotypeProgressions[0])
-	
-	for i := 1; i <= numSteps; i++ {
 
-		newPoints := make([]float64, 0)
-		for phen := 0; phen < len(phenotypeList); phen++ {
-			newPoints = append(newPoints, phenotypeProgressions[phen][i])
-		}
-		canv := DrawSingleStep(newPoints)
-		animationImages = append(animationImages, canv.img)
-	}
 
-	Process(animationImages, "Phenotypes")
 
 }
 
