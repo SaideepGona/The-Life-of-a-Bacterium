@@ -26,7 +26,7 @@ import (
 type Phenotype struct {							// A phenotype and associated aggregate function information
 	aggFunction string
 	aggFuncArgs []string
-	edges []*Edge
+	edges []Edge
 }
 
 type Edge struct {								// An edge defined by endpoints and with an edge function/arguments
@@ -35,7 +35,9 @@ type Edge struct {								// An edge defined by endpoints and with an edge funct
 	weight float64
 }
 
-type Gene []float64								// Genome with gene names and corresponding numerical slices
+type Gene struct{
+	values []float64	
+}												// Genome with gene names and corresponding numerical slices
 
 type DNA struct {
 	phenotypes map[string]Phenotype				// Contains all phenotypes the DNA "controls"
@@ -57,8 +59,11 @@ type DNA struct {
 func MakeNewDNA() DNA {
 
 	// Creates brand new DNA object using the readin file format
-
-	filePath := os.Getwd() + "/../OtherFiles/DNA_blueprint.txt"
+	wd, err := os.Getwd() 
+	if err != nil {
+		fmt.Println("Error with accessing current working directory")
+	}
+	filePath := wd + "/../OtherFiles/DNA_Blueprint.txt"
 	dnaFile := ReadDNAFile(filePath)
 	return BuildDNA(dnaFile)
 
@@ -124,20 +129,20 @@ func BuildDNA(fileLines []string) DNA {
 		}
 
 		if currentState == "configuration" {								// Check current read-in state while traversing lines
-			currentLine := strings.Split(fileLines[i], ":")
-			fullDNA.makeConfig(currentLine)
+			currentLine := strings.Split(fileLines[i], "=")
+			fullDNA.MakeConfig(currentLine)
 		}
 		if currentState == "phenotypes" {
 			currentLine := strings.Split(fileLines[i], ",")
-			fullDNA.makePhen(currentLine)
+			fullDNA.MakePhen(currentLine)
 		}
 		if currentState == "genes" {
 			currentLine := strings.Split(fileLines[i], ",")
-			fullDNA.makeGene(currentLine)
+			fullDNA.MakeGene(currentLine)
 		}
 		if currentState == "edges" {
 			currentLine := strings.Split(fileLines[i], ",")
-			fullDNA.makeEdge(currentLine)
+			fullDNA.MakeEdge(currentLine)
 		}
 	}
 	return fullDNA
@@ -157,10 +162,10 @@ func (dna *DNA) MakeConfig(currentLine []string) {
 	if currentLine[0] == "Mutation Magnitude" {
 		dna.mutMagnitude = configVal
 	}
-	if currentLine[0] == "BoundLow" {
+	if currentLine[0] == "Low Bound" {
 		dna.boundsLow = configVal
 	}
-	if currentLine[0] == "BoundHigh" {
+	if currentLine[0] == "High Bound" {
 		dna.boundsHigh = configVal
 	}
 	if currentLine[0] == "Gene Size" {
@@ -190,12 +195,16 @@ func (dna *DNA) MakePhen(currentLine []string) {
 func (dna *DNA) MakeGene(currentLine []string) {
 
 	if currentLine[1] == "normal" {
-		gene := make(Gene, dna.geneSize)
-		geneName := currentLine
+		geneValues := make([]float64, dna.geneSize)
+		var gene Gene
+		gene.values = geneValues
+		geneName := currentLine[0]
 		dna.genome[geneName] = gene
 	} else if currentLine[1] == "lk" {
-		gene := make(Gene, dna.lksize)
-		geneName := currentLine
+		geneValues := make([]float64, dna.geneSize)
+		var gene Gene
+		gene.values = geneValues
+		geneName := currentLine[1]
 		dna.genome[geneName] = gene
 	}
 }
@@ -225,7 +234,7 @@ func (dna *DNA) MakeEdge(currentLine []string) {
 
 func (petri *Petri) MutateAll() {
 	for _, bacteria := range petri.allBacteria {
-		bacteria.DNA.MutateDNA()
+		bacteria.dna.MutateDNA()
 	} 
 }
 
@@ -236,7 +245,9 @@ func (dna *DNA) MutateDNA() {
 	*/
 
 	for gene := range dna.genome {
-		dna.genome[gene].Mutate(dna.mutRate, dna.mutMagnitude,dna.boundsLow,dna.boundsHigh)
+		currentGene := dna.genome[gene]
+		currentGene.Mutate(dna.mutRate, dna.mutMagnitude,dna.boundsLow,dna.boundsHigh)
+		dna.genome[gene] = currentGene
 	}
 }
 
@@ -246,19 +257,19 @@ func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 	Mutates input gene via pointer
 	*/
 
-	for i := 0; i < len(gene); i ++ {				// Loop through all values for gene
+	for i := 0; i < len(gene.values); i ++ {				// Loop through all values for gene
 		newRoll := rand.Float64()					// Roll to see if mutation occurs
 		if newRoll < mutationRate {
-			directionRoll := rand.Intn(1)			// Roll to see if mutation is positive or negative
+			directionRoll := rand.Intn(2)			// Roll to see if mutation is positive or negative
 			if directionRoll == 0 {
-				gene[i] += mutationMagnitude
-				if gene[i] > high {
-					gene[i] -= mutationMagnitude/2.0
+				gene.values[i] += mutationMagnitude
+				if gene.values[i] > high {
+					gene.values[i] -= mutationMagnitude/2.0
 				}
 			} else {
-				gene[i] -= mutationMagnitude
-				if gene[i] < low {
-					gene[i] += mutationMagnitude/2.0
+				gene.values[i] -= mutationMagnitude
+				if gene.values[i] < low {
+					gene.values[i] += mutationMagnitude/2.0
 				}
 			}
 		}
@@ -269,19 +280,17 @@ func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 
 // ----------------- SAMPLING METHODS ----------------------------
 
-func (dna *DNA) PhenotypeExpectation(PhenotypeName string) float64 {
+func (dna *DNA) PhenotypeExpectation(phenotypeName string) float64 {
 
-	weightedSum := 0.0
-	edges := dna.phenotypes[phenotypeName].edges
+	weightedExp := 0.0
+	edges := dna.phenotypes[phenotypeName].edges //[]Edge
 
 	for i := 0; i < len(edges); i++ {
-
-		geneMean := Mean(edges[i].gene)
-		weight := edges.weight
-		weightedExpectation += weight*sampleMean
-
+		geneMean := Mean(dna.genome[edges[i].gene].values)
+		weight := edges[i].weight
+		weightedExp += weight*geneMean
 	}
-	return weightedExpectation
+	return weightedExp
 }
 
 func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
@@ -297,7 +306,7 @@ func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
 
 		newSample := dna.SampleGene(edges[i].gene)
 		sampleMean := Mean(newSample)
-		weight := edges.weight
+		weight := edges[i].weight
 		weightedSum += weight*sampleMean
 
 	}
@@ -316,7 +325,7 @@ func (dna *DNA) SampleGene(geneName string) []float64 {
 
 	for i := 0; i < dna.sampleSize; i ++ {
 
-		sampleSlice = append(sampleSlice, dna.genome[geneName][randIndex[i]])
+		sampleSlice = append(sampleSlice, dna.genome[geneName].values[randIndex[i]])
 
 	}
 	return sampleSlice
@@ -334,7 +343,7 @@ func Mean(list []float64) float64 {
 	return sum/float64(len(list))
 }
 
-func Logistic(inputVal float64, arguments []string) {
+func Logistic(inputVal float64, arguments []string) float64{
 
 	// Passes an input into a logistic function as well as arguments for the function and returns the output. 
 
@@ -357,7 +366,7 @@ func Logistic(inputVal float64, arguments []string) {
 	steepness := floatArgs[1]
 	midpoint := floatArgs[2]
 
-	output := max/(1.0 + Exp(((-1)*steepness)*(inputVal-midpoint)))
+	output := max/(1.0 + math.Exp(((-1)*steepness)*(inputVal-midpoint)))
 	return output
 
 }
@@ -365,7 +374,7 @@ func Logistic(inputVal float64, arguments []string) {
 // ----------------- END SAMPLING METHODS ------------------------
 
 // ----------------- DNA PLOTTING METHODS ------------------------
-
+/*
 func AnimatePhenotypes(phenMap map[string][]float64) {
 
 	// Animates the average values of all phenotypes over time
@@ -387,5 +396,5 @@ func AnimatePhenotypes(phenMap map[string][]float64) {
 }
 
 func DrawSingleStep()
-
+*/
 
