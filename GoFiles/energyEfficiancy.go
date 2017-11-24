@@ -5,25 +5,20 @@ package main
 
 func (dna *DNA) UpdateEE() {
 
-	phenotype = "Energy Efficiency"
-	newEERaw := dna.PhenotypeAverage(phenotype)
-	newEE := Logistic(newEERaw, dna.phenotype.)
+	// Updates energy efficiency
+
+	newEERaw := dna.PhenotypeAverage("EE")
+	newEE := Logistic(newEERaw, dna.phenotype.aggFuncArgs)
 	dna.energyEfficiancy = newEE
 
 }
 
-func (bact *Bacteria) BurnEnergy(phenotype string) {
+func (p *Petri) UpdateAllEE() {
 
-	if phenotype == "movement" {
-		phenVal := bact.movement
-		scale := 1.0
+	// Updates the energy efficiency for all bacteria in petri dish
+
+	for index, bacteria := range p.allBacteria {
+		bacteria.dna.UpdateEE()
 	}
-
-	if phenotype == "antibiotic" {
-		phenVal := bact.potency
-		scale := 1.0
-	}
-
-	burnAmount := bact.energyEfficiancy * phenVal * scale
-	bact.currentEnergy = bact.currentEnergy - burnAmount
 }
+
