@@ -8,7 +8,7 @@ package main
 import (
    "math"
    "math/rand"
-
+"fmt"
 //   "time"
 )
 
@@ -27,12 +27,27 @@ type Bacteria struct {
   sizeRadius float64
   repEnergy float64
   attackRange float64
+  ABenzyme ABenzyme
+  resistEnzyme ResistEnzyme
+  dna DNA
+}
+
+type ResistEnzyme struct {
+  key int
+  potency float64
+}
+
+
+type ABenzyme struct {
+  lock int
+  potency float64
 }
 
 type Petri struct {
   radius float64
   allBacteria []Bacteria
   allFoodpack []Foodpackage
+  basalMetabolism float64
 }
 
 type Foodpackage struct {
@@ -43,7 +58,7 @@ type Foodpackage struct {
 
 func (p *Petri) InitializeFoodpackage(numFood int,radius float64) {
   //First of all, foodpackage were initially randomized in the petri dish.
-  rand.Seed(1000)
+  //rand.Seed(1000)
   // Rand.Seed between InitializeFoodpackage and InitialBact should be different
   // to prevent they were at the same place at the begining
   pi := math.Pi
@@ -56,9 +71,8 @@ func (p *Petri) InitializeFoodpackage(numFood int,radius float64) {
     p.allFoodpack[i].position.coorY = p.radius + r * math.Sin(theta)
     p.allFoodpack[i].position.coorX = p.radius + r * math.Cos(theta)
     // Set every food package containing 5 energy scores
-    p.allFoodpack[i].energy = 20.0
-
-  }
+    p.allFoodpack[i].energy = 8.0
+}
 }
 
 func (p *Petri) InitializeEnergyEfficiency() {
@@ -69,20 +83,28 @@ func (p *Petri) InitializeEnergyEfficiency() {
 
 func (p *Petri) InitializeBact(numBact int, radius float64) {
   // This process were quite similar to what we have in InitializeFoodpackage
-    rand.Seed(20)
+
     pi := math.Pi
     p.radius = radius
     p.allBacteria = make([]Bacteria, numBact)
-
+    newdna := MakeNewDNA()
+    fmt.Println(newdna)
     for i := 0; i < numBact ; i++ {
-      r := rand.Float64() * p.radius
+      r := rand.Float64()* p.radius
       theta := rand.Float64() * 2 * pi
-      p.allBacteria[i].position.coorY = p.radius + r*math.Sin(theta)
-      p.allBacteria[i].position.coorX = p.radius + r*math.Cos(theta)
+      p.allBacteria[i].position.coorY = p.radius - p.allBacteria[i].sizeRadius + r*math.Sin(theta)
+      p.allBacteria[i].position.coorX = p.radius - p.allBacteria[i].sizeRadius + r*math.Cos(theta)
       p.allBacteria[i].currentEnergy = 200.0
-      p.allBacteria[i].energyCapacity = 250.0
+      p.allBacteria[i].energyCapacity = 300.0
+    //  for math.Sqrt((p.allBacteria[i].position.coorX - p.radius)*(p.allBacteria[i].position.coorY - p.radius)) > p.radius{
+     //fmt.Println("1")
+    //   p.allBacteria[i].position.coorY = rand.Float64() * 2 * p.radius
+    //   p.allBacteria[i].position.coorX = rand.Float64() * 2 * p.radius
+     //}
       p.allBacteria[i].stepSize = 5.0
       p.allBacteria[i].sizeRadius = 3.0
+      p.allBacteria[i].repEnergy = 100.0
+      p.allBacteria[i].dna = newdna
     }
 }
 
@@ -115,6 +137,12 @@ func (p *Petri) IsEnd() bool{
       }
       return false
 }
+
+func (p *Petri)CostBasicEnergy() {
+    for i := 0; i < len(p.allBacteria) ; i ++ {
+      p.allBacteria[i].currentEnergy -= 3.0
+    }
+  }
 
 func (p *Petri) ChecktoDeleteBact(){
   for index := 0; index < len(p.allBacteria); index ++ {
@@ -151,10 +179,9 @@ func MinDisFood(foodBoard []Foodpackage,xBact,yBact,radius float64) (int,float64
 }
 
 func (p *Petri) MoveToFood() {
-  rand.Seed(38)
   // first, range through all the bacteria i a petri dish
   for i := 0; i < len(p.allBacteria); i ++ {
-    if p.IsLive(i) == true {
+    if p.IsFoodAround(i) == true {
     //fmt.Println(len(p.allBacteria))
     bactMaxEnergy := p.allBacteria[i].energyCapacity
     xBact := p.allBacteria[i].position.coorX
@@ -162,10 +189,10 @@ func (p *Petri) MoveToFood() {
   // k and minDistance stands for which foodpackge were detected and how much
   // distance it has.
     k,minDistance :=  MinDisFood(p.allFoodpack,xBact,yBact,p.radius)
-    energyConsumption := minDistance*1.0*p.allBacteria[i].energyEfficiency
+    energyConsumption := minDistance*0.6*p.allBacteria[i].energyEfficiency
     p.allBacteria[i].currentEnergy -= energyConsumption
   // To check the distance between foodpackage and bacteria are in the detection range
-    if p.IsLive(i) == true && p.IsRandomMove(i) == false && minDistance < p.allBacteria[i].stepSize  {
+    if p.IsLive(i) == true && p.IsRandomMove(i) == false && minDistance < p.allBacteria[i].stepSize {
   // Move the coordinate of bacteria to the nearest foodpackge that has energy and
   // inside its detection range
       p.allBacteria[i].position.coorX = p.allFoodpack[k].position.coorX
