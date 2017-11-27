@@ -90,12 +90,12 @@ func (p *Petri) RandomStep(X, Y float64) {
   //index := rand.Intn(len(p.allBacteria))
   //fmt.Println("index", index)
   randomlist:=PermuteList(*p)
-  for index:=0; index< len(randomlist); index++{
+  for index:=0; index< len(randomlist); index++ {
      count:=0
 	   a, b := (*p).allBacteria[index].position.coorX, (*p).allBacteria[index].position.coorY
      energyconsumed:=EnergyBurnMovement(*p, index)
      //fmt.Println("energyconsumed", energyconsumed)
-     if energyconsumed<=(*p).allBacteria[index].currentEnergy{
+     if energyconsumed<=(*p).allBacteria[index].currentEnergy && p.IsFoodAround(index) == false {
 	      for (a == (*p).allBacteria[index].position.coorX && b == (*p).allBacteria[index].position.coorY) || !InField(a, b, X, Y, *p) || IsOccupied(a, b, index, *p)==true || IsOverlap(a, b, index, *p)==true{
           /*fmt.Println("x", a)
           fmt.Println("y", b)
@@ -111,15 +111,16 @@ func (p *Petri) RandomStep(X, Y float64) {
           }
         }
 	   }
-     if count<100{
+     if count<100 {
        p.allBacteria[index].position.coorX = a
        p.allBacteria[index].position.coorY = b
        p.allBacteria[index].currentEnergy=p.allBacteria[index].currentEnergy-energyconsumed
      }
        /*fmt.Println("updateda", a)
       fmt.Println("updatedb", b)*/
-  }
+//}
   //fmt.Println(p)
+}
 }
 
 func EnergyBurnMovement(p Petri, index int) float64{
