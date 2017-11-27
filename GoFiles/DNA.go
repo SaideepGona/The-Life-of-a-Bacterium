@@ -280,6 +280,15 @@ func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 
 // ----------------- SAMPLING METHODS ----------------------------
 
+func (p *Petri) AllPhenotypeExpectation(phenotypeName string) float64 {
+	sum := 0.0
+	for i := 0; i < len(p.allBacteria); i ++ { 
+		currentExp := p.allBacteria[i].dna.PhenotypeExpectation(phenotypeName)
+		sum += currentExp
+	}
+	return sum/float64(len(p.allBacteria))
+}
+
 func (dna *DNA) PhenotypeExpectation(phenotypeName string) float64 {
 
 	weightedExp := 0.0
