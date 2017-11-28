@@ -232,9 +232,9 @@ func (dna *DNA) MakeEdge(currentLine []string) {
 
 // ----------------- MUTATING THE DNA --------------------------
 
-func (petri *Petri) MutateAll() {
-	for _, bacteria := range petri.allBacteria {
-		bacteria.dna.MutateDNA()
+func (p *Petri) MutateAll() {
+	for i := 0; i < len(p.allBacteria); i ++ { 
+		p.allBacteria[i].dna.MutateDNA()
 	} 
 }
 
@@ -243,7 +243,6 @@ func (dna *DNA) MutateDNA() {
 	/*
 	Given a dna object, mutates all the genes at once by calling a genome mutate method.
 	*/
-
 	for gene := range dna.genome {
 		currentGene := dna.genome[gene]
 		currentGene.Mutate(dna.mutRate, dna.mutMagnitude,dna.boundsLow,dna.boundsHigh)
@@ -279,6 +278,15 @@ func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 // ----------------- END MUTATE DNA ------------------------------
 
 // ----------------- SAMPLING METHODS ----------------------------
+
+func (p *Petri) AllPhenotypeExpectation(phenotypeName string) float64 {
+	sum := 0.0
+	for i := 0; i < len(p.allBacteria); i ++ { 
+		currentExp := p.allBacteria[i].dna.PhenotypeExpectation(phenotypeName)
+		sum += currentExp
+	}
+	return sum/float64(len(p.allBacteria))
+}
 
 func (dna *DNA) PhenotypeExpectation(phenotypeName string) float64 {
 
@@ -394,7 +402,6 @@ func AnimatePhenotypes(phenMap map[string][]float64) {
 
 
 }
-
-func DrawSingleStep()
 */
+
 

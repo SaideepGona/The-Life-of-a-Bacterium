@@ -3,7 +3,7 @@
 package main
 
 import (
-// "fmt"
+"fmt"
 "image"
 "math/rand"
 "time"
@@ -83,8 +83,13 @@ func (p *Petri) AnimationPetri() []image.Image {
    count := 0
     pic := p.DrawPetri()
     pic.SaveToPNG("Original.png")
+    EEs := make([]float64,0)
+    EEChart := CreateNewCanvas(100,100)
+
     for p.IsEnd() == false && count < 400 {
-      //p.UpdateAllEE()
+      p.UpdateAllEE()
+      //EEExpectation := p.AllPhenotypeExpectation("EE")
+      EEs = append(EEs, 5.0)
       p.CostBasicEnergy()
       p.ChecktoDeleteBact()
       p.ChecktoDeleteFood()
@@ -97,14 +102,18 @@ func (p *Petri) AnimationPetri() []image.Image {
       gifImages = append(gifImages,pic.img)
       count ++
       //fmt.Println(p.allBacteria[0].energyEfficiency)
-      //p.MutateAll()
-
+      p.MutateAll()
+      fmt.Println(p.allBacteria[0].dna)
       sum := 0.0
       for i := 0; i < len(p.allBacteria); i ++ {
         sum += p.allBacteria[i].dna.PhenotypeExpectation("EE")
     }
-     //fmt.Println(sum/float64(len(p.allBacteria)))
+    //fmt.Println(sum/float64(len(p.allBacteria)))
     }
+    fmt.Println(EEs)
+    EEChart.DrawGridLines(EEs)
+    EEChart.SaveToPNG("EE_Expectations.png")
+
   return gifImages
 }
 
