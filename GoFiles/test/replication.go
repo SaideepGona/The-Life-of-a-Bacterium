@@ -53,7 +53,7 @@ func (p *Petri) CreateDaughterBac(b Bacteria) {
 
 func (p *Petri) PickLocation(b Bacteria) (float64, float64) {
   x, y := RepLocation(b)
-  for x > p.radius || y > p.radius {
+  for x > 2 * p.radius || y > 2 * p.radius {
     x, y = RepLocation(b)
   }
   return x, y
