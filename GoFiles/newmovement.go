@@ -3,15 +3,24 @@ import(
   "fmt"
   "math"
   "math/rand"
-  "time"
+  //"time"
 )
+<<<<<<< HEAD
 
 /*type Bacteria struct {
+=======
+/*
+type Bacteria struct {
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865
   position Coords
   sizeRadius float64
   currentEnergy float64
   energyEfficiency float64
   stepSize float64
+<<<<<<< HEAD
+=======
+  //id int
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865
 }
 
 type Petri struct {
@@ -72,7 +81,10 @@ func IsOverlap(x, y float64, i int, p Petri)bool{
   return false
 }
 
+<<<<<<< HEAD
 /*This function randomize the index of allbacteria list, which suggests the order of movement for each bacteria*/
+=======
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865
 func PermuteList(p Petri)[]int{
   list := rand.Perm(len(p.allBacteria))
   for i, _ := range list {
@@ -84,6 +96,7 @@ func PermuteList(p Petri)[]int{
 
 /*This function generates a random step that is within the petridish*/
 func (p *Petri) RandomStep(X, Y float64) {
+<<<<<<< HEAD
   randomlist:=PermuteList(*p)
   for index:=0; index< len(randomlist); index++{
      count:=0
@@ -111,17 +124,59 @@ func (p *Petri) RandomStep(X, Y float64) {
        p.allBacteria[index].position.coorY = b
        p.allBacteria[index].currentEnergy=p.allBacteria[index].currentEnergy-energyconsumed
      }
+=======
+  //index := rand.Intn(len(p.allBacteria))
+  //fmt.Println("index", index)
+  randomlist:=PermuteList(*p)
+  for index:=0; index< len(randomlist); index++{
+	   a, b := (*p).allBacteria[index].position.coorX, (*p).allBacteria[index].position.coorY
+     energyconsumed:=EnergyBurnMovement(*p, index)
+     //fmt.Println("energyconsumed", energyconsumed)
+     if energyconsumed<=(*p).allBacteria[index].currentEnergy{
+	      for (a == (*p).allBacteria[index].position.coorX && b == (*p).allBacteria[index].position.coorY) || !InField(a, b, X, Y, *p) || IsOccupied(a, b, index, *p)==true || IsOverlap(a, b, index, *p)==true{
+          /*fmt.Println("x", a)
+          fmt.Println("y", b)
+          fmt.Println("in field", InField(a,b,X,Y,p))
+          fmt.Println("IsOccupied", IsOccupied(a,b,index, p))
+          fmt.Println("IsOverlap", IsOverlap(a, b, index, p))*/
+		      randomTheta := RandomDelta()
+		      a = p.allBacteria[index].position.coorX + math.Cos(randomTheta)*p.allBacteria[index].stepSize           //a and b are updated and they are the new coordinates
+		      b = p.allBacteria[index].position.coorY + math.Sin(randomTheta)*p.allBacteria[index].stepSize
+        }
+	    }
+      p.allBacteria[index].position.coorX = a
+      p.allBacteria[index].position.coorY = b
+      p.allBacteria[index].currentEnergy=p.allBacteria[index].currentEnergy-energyconsumed
+      /*fmt.Println("updateda", a)
+      fmt.Println("updatedb", b)*/
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865
   }
   fmt.Println(p)
 }
 
+<<<<<<< HEAD
 /*calculate the energy consumed for the movement*/
+=======
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865
 func EnergyBurnMovement(p Petri, index int) float64{
   energyConsumption:=p.allBacteria[index].stepSize*1*p.allBacteria[index].energyEfficiency
   return energyConsumption
 }
 
+<<<<<<< HEAD
 /*func main(){
+=======
+/*func RandomWalk(d, X, Y float64, p Petri){
+  count:=0
+  for count<2{
+    RandomStep(d, X, Y, p)
+    count=count+1
+  }
+  //fmt.Println("this is count", count)
+}*/
+/*
+func main(){
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865
   R:=50.0
   X:=R
   Y:=R
@@ -148,7 +203,13 @@ func EnergyBurnMovement(p Petri, index int) float64{
   p.allBacteria[1].currentEnergy=30
   p.radius=50.0
   fmt.Println("p", p)
+<<<<<<< HEAD
   p.RandomStep(X, Y)
   p.RandomStep(X, Y)
   p.RandomStep(X, Y)*/
 }
+=======
+  //RandomStep(1.0, X, Y, p)
+  p.RandomStep(X, Y)
+}*/
+>>>>>>> d75e13f5d1e59823d27ce26f92bf45556c665865

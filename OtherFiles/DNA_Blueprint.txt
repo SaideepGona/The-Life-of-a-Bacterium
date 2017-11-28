@@ -1,25 +1,35 @@
-<<<<<<< HEAD
-*Phenotypes
-Potency, 
-Resistance
-=======
 Configuration
-Mutation Rate:0.2
-Mutation Magnitude:0.1
-Bounds:10
-Gene Size:10
-Sample Size:50
+Mutation Rate=0.2
+Mutation Magnitude=0.5
+Low Bound=-10.0
+High Bound=10.0
+Gene Size=10
+Sample Size=50
+LK Size=10
 
 Phenotypes
-Movement,Mean,None
-Energy,Mean,None
+Movement,Mean,10.0,0.5,0.0
+EE,Mean,2.0,0.5,0.0
+AE,Mean,1.0,0.5,0.0
+RE,Mean,1.0,0.5,0.0
+Lock,LK,none
+Key,LK,none
 
 Genes
-MovementEnergy
-Movement
+MovementEE,normal
+MovementAE,normal
+AERE,normal
+EERE,normal
+Lock,lk
+Key,lk
 
 Edges
-One,Movement,MovementEnergy,0.5
-Two,Movement,Movement,0.5
-Three,Energy,MovementEnergy,1.0
->>>>>>> 895d340a77f97fb5cff210ed351922d6d2ecc484
+A,Movement,MovementEE,0.5
+B,EE,MovementEE,0.5
+C,Movement,MovementAE,0.5
+D,AE,MovementAE,-0.5
+E,AE,AERE,0.5
+F,RE,AERE,-0.5
+G,EE,EERE,0.5
+H,RE,EERE,0.5
+

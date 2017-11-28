@@ -5,13 +5,56 @@ package main
 
 import (
  "math"
- "fmt"
+// "fmt"
 )
 
 // REMEMBER TO BURN ENERGY
 
 //--------------------------------------------------------------------------
 
+func (p *Petri) Attack() {
+  for i:=0; i<len(p.allBacteria); i++ {
+  // scan bacteria in attack range and list them under targets
+    b := p.allBacteria[i]
+    pointerToB := &b
+    var targets []Bacteria
+    for j:=0; j<len(p.allBacteria); j++ {
+      target := p.allBacteria[j]
+      if i != j && pointerToB.IsTarget(target) {
+        targets = append(targets, target)
+      }
+    }
+//    fmt.Println("initial targets")
+//    fmt.Println(targets)
+
+    targets = UpdateTarget(b, targets)
+//    fmt.Println("after update")
+//    fmt.Println(targets)
+
+    for k:=0; k<len(p.allBacteria); k++ {
+      for x:=0; x<len(targets); x++ {
+        if p.allBacteria[k].position == targets[x].position {
+          p.allBacteria[k] = targets[x]
+        }
+      }
+    }
+
+  }
+}
+
+func UpdateTarget(b Bacteria, targets []Bacteria) []Bacteria {
+  for index:=0; index<len(targets); index++ {
+    if b.ABenzyme.lock != targets[index].resistEnzyme.key {
+      targets[index] = InflictDamage(targets[index], b.ABenzyme.potency)
+    } else if b.ABenzyme.lock == targets[index].resistEnzyme.key && b.ABenzyme.potency > targets[index].resistEnzyme.potency {
+        attackDamage := b.ABenzyme.potency - targets[index].resistEnzyme.potency
+        targets[index] = InflictDamage(targets[index], attackDamage)
+    }
+  }
+  return targets
+}
+
+/*
 func (b *Bacteria) Attack(p Petri, new []Bacteria) []Bacteria {
   // scan bacteria in attack range and list them under targets
   var targets []Bacteria
@@ -29,9 +72,18 @@ func (b *Bacteria) Attack(p Petri, new []Bacteria) []Bacteria {
   fmt.Println(new)
   return new
 }
-
+*/
 // for a given bacterium, SenseOther function determines wheter
 // there are other bacteria near by to attack
+
+func (b *Bacteria) IsTarget(t Bacteria) bool {
+  r := b.attackRange
+  if b.DistToTarget(t) <= r {
+    return true
+  }
+  return false
+}
+/*
 func (b *Bacteria) OthersInRange(all []Bacteria) []Bacteria {
   var inRange []Bacteria
   for _, bacterium := range all {
@@ -45,7 +97,7 @@ func (b *Bacteria) OthersInRange(all []Bacteria) []Bacteria {
   fmt.Println(inRange)
   return inRange
 }
-
+*/
 func (b *Bacteria) DistToTarget(target Bacteria) float64 {
   deltaX := b.position.coorX - target.position.coorX
   deltaY := b.position.coorY - target.position.coorY
@@ -54,15 +106,9 @@ func (b *Bacteria) DistToTarget(target Bacteria) float64 {
 }
 
 // Damage can range from 0 to 9
-func (b *Bacteria) InflictDamage(t Bacteria, damage float64) float64 {
+func InflictDamage(t Bacteria, damage float64) Bacteria {
   inflictedDamage := damage*10
   t.currentEnergy -= inflictedDamage
-  fmt.Println("damage")
-  fmt.Println(inflictedDamage)
-  fmt.Println("energy left")
-  fmt.Println(t.currentEnergy)
-  if t.currentEnergy < 0 {
-    // Die!
-  }
-  return t.currentEnergy
+  // if currentEnergy <= 0, its dead
+  return t
 }

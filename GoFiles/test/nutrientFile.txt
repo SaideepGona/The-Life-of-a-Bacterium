@@ -1,0 +1,6 @@
+carbon 100
+minerals 20
+pentose 100
+sunlight 100
+temperature 100
+oxygen 90

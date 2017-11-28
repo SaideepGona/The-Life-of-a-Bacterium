@@ -8,17 +8,17 @@ type Bacteria struct {
 
   sizeRadius float64
   position Coords
-  detectRadius float64
 
   currentEnergy float64
   energyCapacity float64
   energyEfficiancy float64
+  metabolism float64
 
   ABenzyme ABenzyme
   attackRange float64
   resistEnzyme ResistEnzyme
 
-  movement float64
+  stepSize float64
 
   repEnergy float64
 
@@ -52,7 +52,7 @@ type Predator struct {
 }
 
 type Coords struct {
-  coorX float64
+coorX float64
 	coorY float64
 }
 
@@ -64,12 +64,12 @@ type Petri struct {
 
 type ABenzyme struct {
   lock int
-  potency float64
+  potency int
 }
 
 type ResistEnzyme struct {
   key int
-  potency float64
+  potency int
 }
 
 type FoodPackage struct {
