@@ -7,22 +7,28 @@ import (
 "image"
 "math/rand"
 "time"
+"strconv"
+"strings"
+"math"
 )
 
 func (p *Petri) DrawPetri() Canvas {
   width := p.radius
-  white:= MakeColor(255,255,255)
+  lines := ReadFile("nutrientFile.txt")
+  var items []string = strings.Split(lines[3], " ")
+  n,_ := strconv.Atoi(items[1])
+  yellow:= MakeColor(255,255,uint8(155+n))
   black := MakeColor(0, 0, 0)
   pic := CreateNewCanvas(int(width * 2.0),int(width * 2.0))
   pic.SetFillColor(black)
   pic.Clear()
-  pic.SetFillColor(white)
+  pic.SetFillColor(yellow)
   pic.Circle(width,width,width)
   pic.Fill()
 
   for i := range p.allBacteria {
     if p.IsLive(i) == true {
-      pic.DrawLiveBacteria(p.allBacteria[i].position.coorX , p.allBacteria[i].position.coorY,p.allBacteria[i].sizeRadius)
+      pic.DrawLiveBacteria(p,i,p.allBacteria[i].position.coorX , p.allBacteria[i].position.coorY,p.allBacteria[i].sizeRadius)
   } /*else {
       pic.DrawDeadBacteria(p.allBacteria[i].position.coorX , p.allBacteria[i].position.coorY,rBact)
     }*/
@@ -36,71 +42,81 @@ func (p *Petri) DrawPetri() Canvas {
   return pic
 }
 
-func (pic *Canvas) DrawLiveBacteria(x,y,r float64) {
-   purple := MakeColor(198,177,177)
-   pic.SetFillColor(purple)
+func (pic *Canvas) DrawLiveBacteria(p *Petri,i int,x,y,r float64) {
+  n := p.allBacteria[i].currentEnergy
+   color := MakeColor(0,0,uint8(0 + n/1.2))
+   pic.SetFillColor(color)
    pic.Circle(x,y,r)
    pic.Fill()
 }
 
 func (pic *Canvas) DrawDeadBacteria(x,y,r float64) {
-   deepPurple := MakeColor(0,0,0)
-   pic.SetFillColor(deepPurple)
+   black := MakeColor(0,0,0)
+   pic.SetFillColor(black)
    pic.Circle(x,y,r)
    pic.Fill()
 }
 
+func (p *Petri) IsFoodAround(index int) bool{
+  for i := 0; i < len(p.allFoodpack); i ++{
+    xf := p.allFoodpack[i].position.coorX
+    yf := p.allFoodpack[i].position.coorY
+    xb := p.allBacteria[index].position.coorX
+    yb := p.allBacteria[index].position.coorY
+    if math.Sqrt((yb-yf)*(yb-yf)+(xb-xf)*(xb-xf)) < p.allBacteria[index].stepSize{
+      return true
+    }
+  }
+  return false
+}
 
 func (pic *Canvas) DrawFoodpack(x,y,r float64) {
     // Set Agar to be small yellow dot with a circle of radius 1
-      yellow := MakeColor(120,20,120)
-      pic.SetFillColor(yellow)
+      deepPurple := MakeColor(120,20,120)
+      pic.SetFillColor(deepPurple)
       pic.Circle(x,y,r)
       pic.Fill()
 }
 
 func (p *Petri) AnimationPetri() []image.Image {
+  gifImages := make([]image.Image,0)
+   count := 0
+    pic := p.DrawPetri()
+    pic.SaveToPNG("Original.png")
+    for p.IsEnd() == false && count < 400 {
+      //p.UpdateAllEE()
+      p.CostBasicEnergy()
+      p.ChecktoDeleteBact()
+      p.ChecktoDeleteFood()
+    //  p.Replication()
+      p.MoveToFood()
+      p.RandomStep(p.radius,p.radius)
+      //p.Attack()
 
-gifImages := make([]image.Image,0)
- //count := 0
- //p.ChecktoDeleteBact()
- //p.ChecktoDeleteFood()
- count := 0
-  pic := p.DrawPetri()
-  for p.IsEnd() == false && count < 80 {
-    p.ChecktoDeleteBact()
-    p.ChecktoDeleteFood()
-    p.MoveToFood()
-    p.RandomStep(p.radius,p.radius)
-    pic = p.DrawPetri()
-    gifImages = append(gifImages,pic.img )
-    count ++
-    //p.ChecktoDeleteBact()
-    //p.ChecktoDeleteFood()
-  }
-  //gifImages[count] = pic.img
-  //count ++
-  //p.ChecktoDeleteBact()
-  //p.ChecktoDeleteFood()
-//}
+      pic = p.DrawPetri()
+      gifImages = append(gifImages,pic.img)
+      count ++
+      //fmt.Println(p.allBacteria[0].energyEfficiency)
+      //p.MutateAll()
 
+      sum := 0.0
+      for i := 0; i < len(p.allBacteria); i ++ {
+        sum += p.allBacteria[i].dna.PhenotypeExpectation("EE")
+    }
+     //fmt.Println(sum/float64(len(p.allBacteria)))
+    }
   return gifImages
 }
 
 func main() {
   var p Petri
   rand.Seed(time.Now().UTC().UnixNano())
-// Call function menetioned before to initialize bacteria and food package
-  p.InitializeBact(200,200.0)
-
-  p.InitializeFoodpackage(100,200.0)
+  p.InitializeBact(1,200.0)
+  p.ReadEnergyResourceFile("nutrientFile.txt")
+  p.InitializeFoodpackage(1000,200.0)
   p.InitializeEnergyEfficiency()
-
-  pic := p.DrawPetri()
-  pic.SaveToPNG("PetriOrigin.png")
-
   gifImages := p.AnimationPetri()
-   Process(gifImages, "Petri")
+  Process(gifImages, "Petri")
 
 /*
  Print coordinates before the bacteria's moving
