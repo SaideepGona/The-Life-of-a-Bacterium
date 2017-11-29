@@ -63,10 +63,10 @@ func MakeNewDNA() DNA {
 	if err != nil {
 		fmt.Println("Error with accessing current working directory")
 	}
-	filePath := wd + "/../OtherFiles/DNA_Blueprint.txt"
+	filePath := wd + "/DNA_Blueprint.txt"
 	dnaFile := ReadDNAFile(filePath)
-	return BuildDNA(dnaFile)
-
+	newDNA := BuildDNA(dnaFile)
+	return newDNA
 }
 
 func ReadDNAFile(filename string) []string {
@@ -201,10 +201,10 @@ func (dna *DNA) MakeGene(currentLine []string) {
 		geneName := currentLine[0]
 		dna.genome[geneName] = gene
 	} else if currentLine[1] == "lk" {
-		geneValues := make([]float64, dna.geneSize)
+		geneValues := make([]float64, dna.lksize)
 		var gene Gene
 		gene.values = geneValues
-		geneName := currentLine[1]
+		geneName := currentLine[0]
 		dna.genome[geneName] = gene
 	}
 }
@@ -232,22 +232,62 @@ func (dna *DNA) MakeEdge(currentLine []string) {
 
 // ----------------- MUTATING THE DNA --------------------------
 
-func (petri *Petri) MutateAll() {
-	for _, bacteria := range petri.allBacteria {
-		bacteria.dna.MutateDNA()
+func (p *Petri) MutateAll() {
+	for i := 0; i < len(p.allBacteria); i ++ { 
+		p.allBacteria[i].MutateDNA()
+		fmt.Println("bactCheck",i)
+		fmt.Println(p.allBacteria[0])
 	} 
 }
 
-func (dna *DNA) MutateDNA() {
+func (bact *Bacteria) MutateDNA() {
 
 	/*
 	Given a dna object, mutates all the genes at once by calling a genome mutate method.
 	*/
+	for gene,_ := range bact.dna.genome {
+		if gene != "Lock" && gene != "Key" {
+			new := bact.dna.genome[gene]
+			//fmt.Println(new)
+			new.Mutate(bact.dna.mutRate, bact.dna.mutMagnitude,bact.dna.boundsLow,bact.dna.boundsHigh)
+			bact.dna.genome[gene] = new
+		} else {	
+			new := bact.dna.genome[gene]
+			new.MutateLK(bact.dna.mutRate)
+			bact.dna.genome[gene] = new
+		}
+	}
+}
 
-	for gene := range dna.genome {
-		currentGene := dna.genome[gene]
-		currentGene.Mutate(dna.mutRate, dna.mutMagnitude,dna.boundsLow,dna.boundsHigh)
-		dna.genome[gene] = currentGene
+func (gene *Gene) MutateLK(mutationRate float64) {
+
+	/*
+	Mutates either the lock gene or the key gene. Consists of an equal probability 
+	cycle -5 to 5 where adding to 5 yields -5 and subtracting from -5 yields 5
+	*/
+
+	mutateRoll := rand.Float64()
+	if mutateRoll < mutationRate/5.0 {
+
+		directionRoll := rand.Intn(2)
+		if directionRoll == 0 {		
+			if gene.values[0] == 5.0 {
+				gene.values[0] = 4.0
+			} else if gene.values[0] == -5 {
+				gene.values[0] =5.0
+			} else{		
+				gene.values[0] -= 1.0
+			}
+		}
+		if directionRoll == 1 {
+			if gene.values[0] == 5.0 {
+				gene.values[0] = -5.0
+			} else if gene.values[0] == -5 {
+				gene.values[0] =-4.0
+			} else{		
+				gene.values[0] -= 1.0
+			}
+		}
 	}
 }
 
@@ -257,8 +297,10 @@ func (gene *Gene) Mutate(mutationRate, mutationMagnitude, low, high float64) {
 	Mutates input gene via pointer
 	*/
 
+
 	for i := 0; i < len(gene.values); i ++ {				// Loop through all values for gene
 		newRoll := rand.Float64()					// Roll to see if mutation occurs
+		//fmt.Println(newRoll)
 		if newRoll < mutationRate {
 			directionRoll := rand.Intn(2)			// Roll to see if mutation is positive or negative
 			if directionRoll == 0 {
@@ -292,12 +334,13 @@ func (p *Petri) AllPhenotypeExpectation(phenotypeName string) float64 {
 func (dna *DNA) PhenotypeExpectation(phenotypeName string) float64 {
 
 	weightedExp := 0.0
-	edges := dna.phenotypes[phenotypeName].edges //[]Edge
 
-	for i := 0; i < len(edges); i++ {
-		geneMean := Mean(dna.genome[edges[i].gene].values)
-		weight := edges[i].weight
-		weightedExp += weight*geneMean
+	for _, edge := range dna.edges {
+		if edge.phenotype == phenotypeName{
+			geneMean := Mean(dna.genome[edge.gene].values)
+			weight := edge.weight
+			weightedExp += weight*geneMean
+		}
 	}
 	return weightedExp
 }
@@ -309,16 +352,16 @@ func (dna *DNA) PhenotypeAverage(phenotypeName string) float64 {
 	*/
 
 	weightedSum := 0.0
-	edges := dna.phenotypes[phenotypeName].edges
-
-	for i := 0; i < len(edges); i++ {
-
-		newSample := dna.SampleGene(edges[i].gene)
-		sampleMean := Mean(newSample)
-		weight := edges[i].weight
-		weightedSum += weight*sampleMean
-
+	for _, edge := range dna.edges {
+		if edge.phenotype == phenotypeName{
+			newSample := dna.SampleGene(edge.gene)
+			sampleMean := Mean(newSample)
+			weight := edge.weight
+			weightedSum += weight*sampleMean
+		}
 	}
+
+	fmt.Println("weighted", weightedSum)
 	return weightedSum
 }
 
@@ -403,7 +446,6 @@ func AnimatePhenotypes(phenMap map[string][]float64) {
 
 
 }
-
-func DrawSingleStep()
 */
+
 
