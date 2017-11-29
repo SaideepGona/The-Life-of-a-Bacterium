@@ -26,6 +26,31 @@ type Bacteria struct {
 
 }
 
+/*Xinling Li*/
+type Predator struct {
+
+  linage int
+
+  sizeRadius float64
+  position Coords
+  detectRadius float64
+
+  currentEnergy float64
+  energyCapacity float64
+  energyEfficiancy float64
+
+  ABenzyme ABenzyme
+  attackRange float64
+  resistEnzyme ResistEnzyme
+
+  movement float64
+
+  repEnergy float64
+
+  dna DNA
+
+}
+
 type Coords struct {
 coorX float64
 	coorY float64
@@ -34,6 +59,7 @@ coorX float64
 type Petri struct {
   radius float64
   allBacteria []Bacteria
+  allPredator []Predator     //Xinling Li
 }
 
 type ABenzyme struct {
