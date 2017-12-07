@@ -2,7 +2,7 @@
 
 This is a probabilistic evolutionary simulation of the microbiome. The simulation is written in Go(golang) https://golang.org/, which is nested into an Electron desktop GUI https://electronjs.org/.
 
-![Alt text](/final/data/original.png?raw=true)
+![Alt text](blob/master/final/data/Original.png?raw=true)
 
 Install instructions:
 
