@@ -1,7 +1,0 @@
-agar 100
-minerals 20
-pentose 30
-sunlight 50
-temperature 80
-oxygen 30
-carbon 40
