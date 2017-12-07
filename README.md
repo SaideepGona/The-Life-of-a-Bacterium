@@ -4,7 +4,7 @@ This is a probabilistic evolutionary simulation of the microbiome. The simulatio
 
 
 
-![Alt text](The-Life-of-a-Bacterium/final/data/Original.png)
+![Alt text](/final/data/Original.png)
 
 
 
