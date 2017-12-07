@@ -22,12 +22,13 @@ This is a probabilistic evolutionary simulation of the microbiome. The simulatio
 
 5.) To start app, run: npm install     
 
-#### To Be Able to Modify and Build simulation.exe 
+#### To Be Able to Modify and Build simulation.exe (for developing on the go simulation)
 
 1.) Clone repository into your go/src/ directory
 
-2.) Move the graphing package directly under go/src/
+2.) Move the graphing package directly under go/src/  
+  - You should now have a directory go/src/The-Life-of-a-Bacterium
 
-3.) To build exe, navigate to: 02-601CodingProject/final/ . Run: go build.
+3.) To build the .exe, navigate to: 02-601CodingProject/final/ . Run: go build.
 
 4.) Follow --Standard Use Case-- above to run app as needed.
