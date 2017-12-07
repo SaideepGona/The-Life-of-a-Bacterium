@@ -8,9 +8,9 @@ This is a probabilistic evolutionary simulation of the microbiome. The simulatio
 
 
 
-Install instructions:
+## Install instructions:
 
--- For Standard Use Case --
+#### For Standard Use Case 
 
 1.) Clone repository into a local directory
 
@@ -22,7 +22,7 @@ Install instructions:
 
 5.) To start app, run: npm install     
 
--- To Be Able to Modify and Build simulation.exe --
+#### To Be Able to Modify and Build simulation.exe 
 
 1.) Clone repository into your go/src/ directory
 
