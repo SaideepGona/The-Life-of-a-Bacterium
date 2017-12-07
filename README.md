@@ -1,5 +1,7 @@
 # The Life of a Bacterium
 
+This is a probabilistic evolutionary simulation of the microbiome. The simulation is written in Go(golang) https://golang.org/, and is incorporated into an Electron desktop application https://electronjs.org/.
+
 Install instructions:
 
 -- For Standard Use Case --
@@ -14,7 +16,7 @@ Install instructions:
 
 5.) To start app, run: npm install     
 
--- To be able to modify and build simulation.exe --
+-- To Be Able to Modify and Build simulation.exe --
 
 1.) Clone repository into your go/src/ directory
 
