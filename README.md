@@ -16,9 +16,9 @@ This is a probabilistic evolutionary simulation of the microbiome. The simulatio
 
 2.) Download and install Node.js (8.9.2 LTS) from: https://nodejs.org/en/
 
-3.) Navigate to: 02-601CodingProject/final/ via command line
+3.) Navigate to: The-Life-of-a-Bacterium/final/ via command line
 
-4.) Make sure your system has permission to execute simulation.exe in the final/ directory.
+4.) Make sure your system has permission to execute simulation.exe in the The-Life-of-a-Bacterium/final/ directory.
 
 5.) To start app, run: npm install     
 
@@ -26,9 +26,9 @@ This is a probabilistic evolutionary simulation of the microbiome. The simulatio
 
 1.) Clone repository into your go/src/ directory
 
-2.) Move the graphing package directly under go/src/  
-  - You should now have a directory go/src/The-Life-of-a-Bacterium
+2.) Move the graphing package directory (gonum.org located in: The-Life-of-a-Bacterium/) directly under go/src/  
+  - You should now have a directory go/src/gonum.org
 
-3.) To build the .exe, navigate to: 02-601CodingProject/final/ . Run: go build.
+3.) To build the .exe, navigate to: The-Life-of-a-Bacterium/final/ . Run: go build.
 
-4.) Follow --Standard Use Case-- above to run app as needed.
+4.) Follow --Standard Use Case-- above (starting at step 2) to run app as needed.
