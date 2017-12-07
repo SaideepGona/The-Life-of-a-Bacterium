@@ -1,0 +1,34 @@
+Configuration
+Mutation Rate=0.2
+Mutation Magnitude=0.5
+Low Bound=-10.0
+High Bound=10.0
+Gene Size=10.0
+Sample Size=5
+LK Size=1
+
+Phenotypes
+Movement,Mean,10.0,0.5,0.0
+EE,Mean,2.0,1.0,0.0
+AE,Mean,10.0,0.5,0.0
+RE,Mean,10.0,0.5,0.0
+Lock,LK,none
+Key,LK,none
+
+Genes
+MovementEE,normal
+MovementAE,normal
+AERE,normal
+EERE,normal
+Lock,lk
+Key,lk
+
+Edges
+A,Movement,MovementEE,0.5
+B,EE,MovementEE,0.5
+C,Movement,MovementAE,0.5
+D,AE,MovementAE,-0.5
+E,AE,AERE,0.5
+F,RE,AERE,-0.5
+G,EE,EERE,0.5
+H,RE,EERE,0.5

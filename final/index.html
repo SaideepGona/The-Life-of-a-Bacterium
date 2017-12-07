@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+
+	Modified by Saideep Gona
+-->
+<html>
+	<head>
+		<title>The Life of a Bacterium</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="stylesheets/main.css" />
+		<link rel="stylesheet" type="text/css" href="stylesheets/e_app.css" media="screen">
+	</head>
+
+	<body class="landing">
+		<!-- Banner -->
+			<section id="banner">	
+				<h2>The Life of a Bacterium</h2>
+				<p>Initialize parameters below.</p>
+				<textarea id="initialization">200.0 | 3 | 200 | 30 | 50 | 1 | 13 | 0.5</textarea>
+				<div id="instructionbox" style="color:white">DishRadius | StartingBacteria | Iteration | DrugCutoff | PredCutoff | PredCount | EnergyContent | BasalMetabolism</p>
+				<p>Click "Run" to generate a simulation. When loading completes, click "Refresh" followed by "Display" to display new results.</p>
+				<ul class="actions">
+					<li><a id="RunButton" href="#" class="button big">Run</a></li>
+					<li><a id="RefreshButton" href="#" class="button big">Refresh</a></li>
+					<li><a id="LoadButton" href="#" class="button big">Display</a></li>
+					<li><a id="UpdateButton" href="#" class="button big">Update-Init</a></li>
+				</ul>
+
+			</section>
+      <div id="load_box" class="circle-loader"></div>
+			<!-- Two -->
+				<section id="two" class="wrapper style2 special content">
+					<div class="container">
+						<header class="major">
+							<h2>Spatial Model</h2>
+	
+						</header>
+							<img src="data/simulation.gif" class="6u" alt="" />
+					</div>
+				</section>
+
+				<section id="three" class="wrapper style1 special content">
+					<div class="container">
+						<header class="major">
+							<h2>Strain Populations</h2>
+							
+						</header>
+							<img src="data/Population of Cells per Bacteria Strain.png" class="6u" alt="" />
+					</div>
+				</section>
+
+			<!-- Three -->
+				<section id="four" class="wrapper style2 content">
+					<div class="container">
+						<header class="major special">
+							<h2>Phenotypes</h2>
+							<p>Plots of phenotype changes over time</p>
+						</header>
+						<div class="feature-grid">
+							<div class="feature">
+								<div><img src="data/Expected Antibiotic Enzyme Potency.png" alt="" /></div>
+								<div class="content">
+									<header>
+										<h4>Antibiotic Enzyme Potency</h4>
+										<p>Measure of damage caused by secretion of enzyme</p>
+									</header>
+									<p></p>
+								</div>
+							</div>
+							<div class="feature">
+								<div><img src="data/Expected Resistance Enzyme Potency.png" alt="" /></div>
+								<div class="content">
+									<header>
+										<h4>Resistance Enzyme Effectiveness</h4>
+										<p>Measure of ability of resistance enzyme to block antibiotic</p>
+									</header>
+									<p></p>
+								</div>
+							</div>
+							<div class="feature">
+								<div><img src="data/Expected Energy Efficiency Value.png" alt="" /></div>
+								<div class="content">
+									<header>
+										<h4>Energy Efficiancy</h4>
+										<p>Coefficient of energy burn (larger number implies LESS energy efficiency)</p>
+									</header>
+									<p></p>
+								</div>
+							</div>
+							<div class="feature">
+								<div><img src="data/Expected Movement Value.png" alt="" /></div>
+								<div class="content">
+									<header>
+										<h4>Mobility</h4>
+										<p>Movement units per turn</p>
+									</header>
+									<p></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<button class="button big content" onclick="topFunction()" id="myBtn" title="Go to top">Back to Top</button>
+		<!-- Footer -->
+			<footer id="footer">
+				Kwanho Kim, Saideep Gona, Xinling Li, Zhenyu Yang
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script>window.$ = window.jQuery = require('jquery');</script>
+    		<script type="text/javascript" src="package.json"></script>
+    		<script type="text/Javascript" src="js/Update.js"></script>
+			<script type="text/javascript" src="js/Backend.js"></script>
+
+	</body>
+</html>

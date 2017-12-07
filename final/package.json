@@ -1,0 +1,28 @@
+{
+  "name": "ncbi_study_manager",
+  "version": "1.0.0",
+  "description": "A study manager for in-silico research based on NCBI's entrez database",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaideepGona/Electron_App.git"
+  },
+  "keywords": [
+    "NCBI",
+    "electron"
+  ],
+  "author": "Saideep Gona",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SaideepGona/Electron_App/issues"
+  },
+  "homepage": "https://github.com/SaideepGona/Electron_App#readme",
+  "dependencies": {
+    "electron": "^1.4.12",
+    "express": "^4.14.0",
+    "jquery": "^3.1.1"
+  }
+}
