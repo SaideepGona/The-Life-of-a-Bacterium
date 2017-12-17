@@ -1,6 +1,6 @@
 # The Life of a Bacterium
 
-This is a probabilistic evolutionary simulation of the microbiome. The simulation is written in Go(golang) https://golang.org/, which is nested into an Electron desktop GUI https://electronjs.org/.
+This is a probabilistic evolutionary simulation of the microbiome. It simulates behavioral traits of aThe simulation is written in Go(golang) https://golang.org/, which is nested into an Electron desktop GUI https://electronjs.org/.
 
 
 
