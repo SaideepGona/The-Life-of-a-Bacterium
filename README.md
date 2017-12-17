@@ -2,6 +2,19 @@
 
 This is a probabilistic evolutionary simulation of the microbiome. It simulates behavioral traits of aThe simulation is written in Go(golang) https://golang.org/, which is nested into an Electron desktop GUI https://electronjs.org/.
 
+## About the App
+
+Please view: BactApp Presentation.pdf for more information on the simulation itself.
+
+Description of Modifiable Parameters in Simulation: 
+Dish Radius: Size of the environment
+StartBacteria: Number of starting bacteria strains
+Iteration: Amount of timepoints in simulation
+DrugCutoff: Total bacteria population before introduction of antibiotic to the dish
+PredCutoff: Total bacteria population before introduction of predator bacteria to the dish
+PredCount: Number of predators introduced
+EnergyContent: Amount of "energy units" per food packet (default=13)
+BasalMetabolism: Energy units burned per turn for bacteria to remain alive
 
 
 ![Alt text](/simulation/data/Original.png)
