@@ -6,15 +6,15 @@ This is a probabilistic evolutionary simulation of the microbiome. The simulatio
 
 Please view: BactApp Presentation.pdf for more information on the simulation itself.
 
-Description of Modifiable Parameters in Simulation: 
-Dish Radius: Size of the environment
-StartBacteria: Number of starting bacteria strains
-Iteration: Amount of timepoints in simulation
-DrugCutoff: Total bacteria population before introduction of antibiotic to the dish
-PredCutoff: Total bacteria population before introduction of predator bacteria to the dish
-PredCount: Number of predators introduced
-EnergyContent: Amount of "energy units" per food packet (default=13)
-BasalMetabolism: Energy units burned per turn for bacteria to remain alive
+Description of Modifiable Parameters in Simulation: <br />
+Dish Radius: Size of the environment <br />
+StartBacteria: Number of starting bacteria strains <br />
+Iteration: Amount of timepoints in simulation <br />
+DrugCutoff: Total bacteria population before introduction of antibiotic to the dish <br />
+PredCutoff: Total bacteria population before introduction of predator bacteria to the dish <br />
+PredCount: Number of predators introduced <br />
+EnergyContent: Amount of "energy units" per food packet (default=13) <br />
+BasalMetabolism: Energy units burned per turn for bacteria to remain alive <br />
 
 
 ![Alt text](/simulation/data/Original.png)
